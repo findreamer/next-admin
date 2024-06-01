@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@app/*" : ["src/*"],
+      "@services": ["src/services/*"],
+      "@modules": ["src/modules/*"],
+      "@decorators": ["src/decorators/*"]
+    }
   }
 }
