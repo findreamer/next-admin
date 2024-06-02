@@ -32,7 +32,7 @@ db:
   mysql:
     host: 'localhost'
     username: 'root'
-    password: ''
+    password: 'your_password'
     database: 'next-admin'
     port: 3306
     charset: 'utf8mb4'
@@ -47,7 +47,7 @@ db:
 # redis 配置
 redis:
   host: 'localhost'
-  password: '123456'
+  password: ''
   port: 6379
   db: 0
   keyPrefix: 'nest:'
