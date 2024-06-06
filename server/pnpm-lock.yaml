@@ -41,6 +41,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
+  typeorm:
+    specifier: ^0.3.20
+    version: 0.3.20(mysql2@3.10.0)(ts-node@10.9.2)
 
 devDependencies:
   '@nestjs/cli':
