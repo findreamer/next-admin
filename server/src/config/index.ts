@@ -10,7 +10,7 @@ const configFileNameMap = {
 
 const env = process.env.NODE_ENV;
 
-console.log('env ==> ', env);
+console.log(env);
 
 export default () => {
   const envFilePath = join(__dirname, `./${configFileNameMap[env]}.yml`);

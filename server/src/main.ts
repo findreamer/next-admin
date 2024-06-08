@@ -1,5 +1,6 @@
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { mw as requestIpMw } from 'request-ip';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
@@ -48,6 +49,9 @@ async function bootstrap() {
     },
     customSiteTitle: 'Next-Admin API Docs',
   });
+
+  // 获取真实IP
+  app.use(requestIpMw({ attributeName: 'ip' }));
 
   //服务端口
   const port = config.get<number>('app.port') || 8080;
