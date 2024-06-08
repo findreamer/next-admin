@@ -5,6 +5,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { RedisModule } from './module/redis/redis.module';
 import { RedisClientOptions } from '@liaoliaots/nestjs-redis';
 import { HttpModule } from '@nestjs/axios';
+import { AuthModule } from './module/system/auth/auth.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { HttpModule } from '@nestjs/axios';
       },
     }),
     HttpModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
