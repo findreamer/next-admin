@@ -6,6 +6,8 @@ import { RedisModule } from './module/redis/redis.module';
 import { RedisClientOptions } from '@liaoliaots/nestjs-redis';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './module/system/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './common/guards/auth.guards';
 
 @Module({
   imports: [
@@ -50,6 +52,11 @@ import { AuthModule } from './module/system/auth/auth.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
