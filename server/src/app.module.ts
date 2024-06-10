@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guards/auth.guards';
 import { UserModule } from './module/system/user/user.module';
 import { MainModule } from './module/main/main.module';
+import { AxiosModule } from './module/axios/axios.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { MainModule } from './module/main/main.module';
     AuthModule,
     UserModule,
     MainModule,
+    AxiosModule,
   ],
   controllers: [],
   providers: [
