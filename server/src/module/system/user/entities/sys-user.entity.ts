@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { BaseEntity } from '@app/common/entities/base';
 
 @Entity('sys_user', {
@@ -59,6 +60,9 @@ export class UserEntity extends BaseEntity {
   })
   public phonenumber: string;
 
+  /**
+   * 0男 1女 2未知
+   */
   @Column({
     type: 'char',
     name: 'sex',
@@ -67,4 +71,29 @@ export class UserEntity extends BaseEntity {
     comment: '性别',
   })
   public sex: string;
+
+  @Column({ type: 'varchar', name: 'avatar', default: '', comment: '头像地址' })
+  public avatar: string;
+
+  @Exclude({ toPlainOnly: true }) // 屏蔽输出数据中的密码
+  @Column({
+    type: 'varchar',
+    length: 200,
+    nullable: false,
+    default: '',
+    comment: '用户登录密码',
+  })
+  public password: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'login_ip',
+    default: '',
+    length: 128,
+    comment: '最后登陆ip',
+  })
+  public loginIp: string;
+
+  @Column({ type: 'datetime', name: 'login_date', comment: '最后登陆时间' })
+  public loginDate: Date;
 }

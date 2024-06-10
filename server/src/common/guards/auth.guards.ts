@@ -6,12 +6,12 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
-  Request,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { pathToRegexp } from 'path-to-regexp';
 import { ALLOW_ANON } from '@app/common/decorators/allow-anon.decorator';
+import { UserService } from '@app/module/system/user/user.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -20,6 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private readonly reflector: Reflector,
     private readonly config: ConfigService,
+    private readonly userService: UserService,
   ) {
     super();
     this.globalWhiteList = [].concat(
@@ -40,8 +41,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const accessToken = req.get('Authorization');
 
     if (!accessToken) throw new ForbiddenException('请重新登陆');
-    // 待完成，校验 token 是否 过期
+    const atUserId = this.userService.parseToken(accessToken);
+    if (!atUserId)
+      throw new UnauthorizedException('当前登录已过期，请重新登录');
 
+    // 待完成，校验 token 是否 过期
     return this.activate(ctx);
   }
 
