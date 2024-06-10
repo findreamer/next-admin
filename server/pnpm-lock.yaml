@@ -53,6 +53,9 @@ dependencies:
   helmet:
     specifier: ^7.1.0
     version: 7.1.0
+  iconv-lite:
+    specifier: ^0.6.3
+    version: 0.6.3
   ioredis:
     specifier: ^5.4.1
     version: 5.4.1
@@ -86,6 +89,9 @@ dependencies:
   useragent:
     specifier: ^2.3.0
     version: 2.3.0
+  uuid:
+    specifier: ^10.0.0
+    version: 10.0.0
 
 devDependencies:
   '@nestjs/cli':
@@ -6036,6 +6042,11 @@ packages:
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==, tarball: https://r2.cnpmjs.org/utils-merge/-/utils-merge-1.0.1.tgz}
     engines: {node: '>= 0.4.0'}
+
+  /uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
+    dev: false
 
   /uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==, tarball: https://r2.cnpmjs.org/uuid/-/uuid-3.4.0.tgz}

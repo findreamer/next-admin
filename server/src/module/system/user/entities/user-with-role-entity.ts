@@ -6,7 +6,7 @@ import { Entity, PrimaryColumn } from 'typeorm';
 @Entity('sys_user_role', {
   comment: '用户和角色关联表',
 })
-export class SysUserwithRoleEntity {
+export class SysUserWithRoleEntity {
   @PrimaryColumn({
     type: 'int',
     name: 'user_id',
