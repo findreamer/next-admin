@@ -41,7 +41,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const accessToken = req.get('Authorization');
 
     if (!accessToken) throw new ForbiddenException('请重新登陆');
-    const atUserId = this.userService.parseToken(accessToken);
+    const atUserId = await this.userService.parseToken(accessToken);
     if (!atUserId)
       throw new UnauthorizedException('当前登录已过期，请重新登录');
 
