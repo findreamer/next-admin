@@ -1,6 +1,6 @@
 import { dayjs } from '.';
 import { v4 as uuidv4 } from 'uuid';
-import { uniq } from 'lodash-es';
+import * as Lodash from 'lodash';
 
 export function GetNowDate() {
   return dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -22,5 +22,5 @@ export function GenerateUUID(): string {
  * @returns
  */
 export function Uniq(list: Array<number | string>) {
-  return uniq(list);
+  return Lodash.uniq(list);
 }

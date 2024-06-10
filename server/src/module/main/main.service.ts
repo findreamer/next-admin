@@ -25,6 +25,6 @@ export class MainService {
       loginLog.loginLocation = loginLocation;
     } catch (error) {}
 
-    const loginRes = await this.userService.login(user);
+    const loginRes = await this.userService.login(user, loginLog);
   }
 }

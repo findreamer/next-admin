@@ -9,11 +9,8 @@ import {
   IsPhoneNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { StatusEnum } from '@app/common/enum';
 
-export enum StatusEnum {
-  STATIC = '0',
-  DYNAMIC = '1',
-}
 export enum SexEnum {
   MALE = '0',
   FEMALE = '1',

@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserEntity } from './entities/sys-user.entity';
 import { SysUserWithPostEntity } from './entities/user-with-post.entity';
-import { SysUserwithRoleEntity } from './entities/user-with-role-entity';
+import { SysUserWithRoleEntity } from './entities/user-with-role-entity';
 
 @Global()
 @Module({
@@ -14,7 +14,7 @@ import { SysUserwithRoleEntity } from './entities/user-with-role-entity';
     TypeOrmModule.forFeature([
       UserEntity,
       SysUserWithPostEntity,
-      SysUserwithRoleEntity,
+      SysUserWithRoleEntity,
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
