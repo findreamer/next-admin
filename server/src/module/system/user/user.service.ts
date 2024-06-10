@@ -31,6 +31,7 @@ export class UserService {
       loginDate,
       userType: SYS_USER_TYPE.CUSTOM,
     });
+    // 待完成postEntity、roleEntity
 
     return ResultData.success();
   }
