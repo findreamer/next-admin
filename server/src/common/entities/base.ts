@@ -58,7 +58,7 @@ export abstract class BaseEntity {
     name: 'create_time',
     update: false,
     default: null,
-    comment: '创建事件',
+    comment: '创建时间',
   })
   public createTime: Date;
 
