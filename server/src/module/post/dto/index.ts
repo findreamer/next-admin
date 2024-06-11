@@ -1,4 +1,5 @@
 import { StatusEnum } from '@app/common/enum';
+import { PagingDTO } from '@app/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
@@ -57,4 +58,21 @@ export class UpdatePostDto extends CreatePostDto {
   })
   @IsNumber()
   postId: number;
+}
+
+export class ListPostDto extends PagingDTO {
+  @IsOptional()
+  @IsString()
+  @Length(0, 50)
+  postName?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 64)
+  postCode?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string;
 }
