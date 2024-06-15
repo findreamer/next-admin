@@ -19,11 +19,11 @@ export class DateParamDTO {
 }
 
 export class PagingDTO {
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: true })
   @IsNumberString()
   pageNum: number;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: true })
   @IsNumberString()
   pageSize: number;
 

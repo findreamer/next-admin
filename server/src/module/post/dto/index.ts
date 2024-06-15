@@ -61,11 +61,19 @@ export class UpdatePostDto extends CreatePostDto {
 }
 
 export class ListPostDto extends PagingDTO {
+  @ApiProperty({
+    description: '岗位名称',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @Length(0, 50)
   postName?: string;
 
+  @ApiProperty({
+    description: '岗位编码',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @Length(0, 64)
