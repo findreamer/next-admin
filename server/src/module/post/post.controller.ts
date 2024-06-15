@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto, ListPostDto } from './dto';
@@ -32,5 +32,14 @@ export class PostController {
   @AllowAnon()
   findAll(@Query() query: ListPostDto) {
     return this.postService.findAll(query);
+  }
+
+  @ApiOperation({
+    summary: '岗位管理-详情',
+  })
+  @Get(':id')
+  @AllowAnon()
+  findOne(@Param('id') id: string) {
+    return this.postService.findeOne(+id);
   }
 }

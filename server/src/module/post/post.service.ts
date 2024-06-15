@@ -41,4 +41,22 @@ export class PostService {
       pageNum: query.pageNum,
     });
   }
+
+  async findeOne(id: number) {
+    const res = await this.sysPostEntityRepository.findOne({
+      where: { postId: id, delFlag: '0' },
+      select: [
+        'createBy',
+        'createTime',
+        'postCode',
+        'postId',
+        'postName',
+        'remark',
+        'updateBy',
+        'updateTime',
+      ],
+    });
+
+    return ResultData.success(res);
+  }
 }
