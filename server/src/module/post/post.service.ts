@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { SysPostEntity } from './entities/post.entity';
 import { CreatePostDto, ListPostDto, UpdatePostDto } from './dto';
 import { ResultData } from '@app/common/utils';
@@ -64,6 +64,18 @@ export class PostService {
     const res = await this.sysPostEntityRepository.update(
       { postId: updatePostDto.postId },
       updatePostDto,
+    );
+    return ResultData.success(res);
+  }
+
+  async delete(ids: string[]) {
+    const res = await this.sysPostEntityRepository.update(
+      {
+        postId: In(ids),
+      },
+      {
+        delFlag: '1',
+      },
     );
     return ResultData.success(res);
   }

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto, ListPostDto, UpdatePostDto } from './dto';
@@ -56,7 +65,16 @@ export class PostController {
     return this.postService.update(updatePostDto);
   }
 
-  // @ApiOperation({
-  //   summary: '岗位管理-删除'
-  // })
+  @ApiOperation({
+    summary: '岗位管理-删除',
+  })
+  @Delete(':id')
+  @AllowAnon()
+  delete(@Param('id') id: string) {
+    const menuIds = id
+      .split(',')
+      .map((id) => id)
+      .filter((id) => id);
+    return this.postService.delete(menuIds);
+  }
 }
