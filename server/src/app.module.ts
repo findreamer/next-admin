@@ -11,7 +11,7 @@ import { JwtAuthGuard } from './common/guards/auth.guards';
 import { UserModule } from './module/system/user/user.module';
 import { MainModule } from './module/main/main.module';
 import { AxiosModule } from './module/axios/axios.module';
-import { PostModule } from './module/post/post.module';
+import { PostModule } from './module/system/post/post.module';
 
 @Module({
   imports: [
