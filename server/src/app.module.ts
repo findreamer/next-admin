@@ -12,6 +12,7 @@ import { UserModule } from './module/system/user/user.module';
 import { MainModule } from './module/main/main.module';
 import { AxiosModule } from './module/axios/axios.module';
 import { PostModule } from './module/system/post/post.module';
+import { RoleModule } from './module/system/role/role.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { PostModule } from './module/system/post/post.module';
     MainModule,
     AxiosModule,
     PostModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [
