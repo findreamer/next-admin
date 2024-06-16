@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PostService } from './post.service';
-import { CreatePostDto, ListPostDto } from './dto';
+import { CreatePostDto, ListPostDto, UpdatePostDto } from './dto';
 import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
 
 @ApiTags('岗位管理')
@@ -42,4 +42,21 @@ export class PostController {
   findOne(@Param('id') id: string) {
     return this.postService.findeOne(+id);
   }
+
+  @ApiOperation({
+    summary: '岗位管理-更新',
+  })
+  @ApiBody({
+    type: UpdatePostDto,
+    required: true,
+  })
+  @Put()
+  @AllowAnon()
+  update(@Body() updatePostDto: UpdatePostDto) {
+    return this.postService.update(updatePostDto);
+  }
+
+  // @ApiOperation({
+  //   summary: '岗位管理-删除'
+  // })
 }
