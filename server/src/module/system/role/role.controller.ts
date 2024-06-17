@@ -98,4 +98,12 @@ export class RoleController {
   dataScope() {}
 
   authUserAllocatedList() {}
+
+  authUserUnAllocatedList() {}
+
+  authUserCancel() {}
+
+  authUserCancelAll() {}
+
+  authUserSelectAll() {}
 }
