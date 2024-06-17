@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Query, Get, Param, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Query,
+  Get,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { RoleService } from './role.service';
 import {
   ChangeStatusDto,
@@ -72,7 +81,17 @@ export class RoleController {
     return this.roleService.changeStatus(changeStatusDto);
   }
 
-  remove() {}
+  @ApiOperation({
+    summary: '角色管理-删除',
+  })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    const ids = id
+      .split(',')
+      .map((id) => +id)
+      .filter((id) => id);
+    return this.roleService.remove(ids);
+  }
 
   deptTree() {}
 

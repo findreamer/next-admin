@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { SysRoleEntity } from './entities/role.entity';
 import {
   ChangeStatusDto,
@@ -80,6 +80,17 @@ export class RoleService {
       { roleId: changeStatusDto.roleId },
       { status: changeStatusDto.status },
     );
+    return ResultData.success(res);
+  }
+
+  async remove(roleIds: number[]) {
+    const res = await this.sysRoleRepository.update(
+      { roleId: In(roleIds) },
+      {
+        delFlag: '1',
+      },
+    );
+
     return ResultData.success(res);
   }
 }
