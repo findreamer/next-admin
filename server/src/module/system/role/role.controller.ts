@@ -93,7 +93,13 @@ export class RoleController {
     return this.roleService.remove(ids);
   }
 
-  deptTree() {}
+  @ApiOperation({
+    summary: '角色管理-部门数',
+  })
+  @Get('/deptTree/:id')
+  deptTree(@Param('id') id: string) {
+    return this.roleService.deptTree(+id);
+  }
 
   dataScope() {}
 

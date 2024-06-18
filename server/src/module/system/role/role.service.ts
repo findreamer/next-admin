@@ -9,12 +9,18 @@ import {
   UpdateRoleDto,
 } from './dto';
 import { ResultData } from '@app/common/utils';
+import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
+import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
 
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(SysRoleEntity)
     private readonly sysRoleRepository: Repository<SysRoleEntity>,
+    @InjectRepository(SysRoleWithDeptEntity)
+    private readonly sysRoleWithDeptEntityRep: Repository<SysRoleWithDeptEntity>,
+    @InjectRepository(SysRoleWithMenuEntity)
+    private readonly sysRoleWithMenuEntityRep: Repository<SysRoleWithMenuEntity>,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {
@@ -93,4 +99,6 @@ export class RoleService {
 
     return ResultData.success(res);
   }
+
+  async deptTree(roleId: number) {}
 }
