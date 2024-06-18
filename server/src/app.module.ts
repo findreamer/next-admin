@@ -13,6 +13,7 @@ import { MainModule } from './module/main/main.module';
 import { AxiosModule } from './module/axios/axios.module';
 import { PostModule } from './module/system/post/post.module';
 import { RoleModule } from './module/system/role/role.module';
+import { DeptModule } from './module/system/dept/dept.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { RoleModule } from './module/system/role/role.module';
     AxiosModule,
     PostModule,
     RoleModule,
+    DeptModule,
   ],
   controllers: [],
   providers: [
