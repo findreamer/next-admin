@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -55,5 +56,21 @@ export class DeptController {
   @Put()
   update(@Body() updateDeptDto: UpdateDeptDto) {
     return this.deptService.update(updateDeptDto);
+  }
+
+  @ApiOperation({
+    description: '部门管理-删除',
+  })
+  @Delete(':id')
+  remove(@Param() id: string) {
+    return this.deptService.remove(+id);
+  }
+
+  @ApiOperation({
+    description: '部门管理-黑名单',
+  })
+  @Get('/list/exclude/:id')
+  findListExclude(@Param('id') id: string) {
+    return this.deptService.findListExclude(+id);
   }
 }
