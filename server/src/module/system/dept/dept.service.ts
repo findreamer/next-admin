@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SysDeptEntity } from './entities/dept.entity';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateDeptDto, ListDeptDto, UpdateDeptDto } from './dto';
-import { ResultData } from '@app/common/utils';
+import { ResultData, ListToTree } from '@app/common/utils';
 import { DataScopeEnum } from '@app/common/enum';
 
 @Injectable()
@@ -137,8 +137,19 @@ export class DeptService {
         this.addQueryForDeptDataScope(entity, deptId);
       } else if (dataScope === DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD) {
         this.andQueryForDeptAndChildDataScope(entity, deptId);
+      } else if (dataScope === DataScopeEnum.DATA_SCOPE_SELF) {
+        // 如果是仅查询本人数据权限，则不查询任何部门，直接返回空数组
+        return [];
       }
-    } catch (error) {}
+
+      // 执行查询并获取结果
+      const list = await entity.getMany();
+
+      return list.map((dept) => dept.deptId);
+    } catch (error) {
+      console.error('Failed to query department IDs:', error);
+      throw new Error('Querying department IDs failed');
+    }
   }
 
   /**
@@ -168,5 +179,25 @@ export class DeptService {
         ancestors: `%${deptId}%`,
       })
       .orWhere(`dept.deptId = :deptId`, { deptId });
+  }
+
+  /**
+   * 获取部门树
+   * @returns
+   */
+  async deptTree() {
+    const res = await this.sysyDeptEntityRep.find({
+      where: {
+        delFlag: '0',
+      },
+    });
+
+    const tree = ListToTree(
+      res,
+      (m) => m.deptId,
+      (m) => m.deptName,
+    );
+
+    return tree;
   }
 }
