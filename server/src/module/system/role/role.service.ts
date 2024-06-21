@@ -8,9 +8,10 @@ import {
   ListRoleDto,
   UpdateRoleDto,
 } from './dto';
-import { ResultData } from '@app/common/utils';
+import { ListToTree, ResultData } from '@app/common/utils';
 import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
 import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
+import { SysDeptEntity } from '../dept/entities/dept.entity';
 
 @Injectable()
 export class RoleService {
@@ -21,6 +22,8 @@ export class RoleService {
     private readonly sysRoleWithDeptEntityRep: Repository<SysRoleWithDeptEntity>,
     @InjectRepository(SysRoleWithMenuEntity)
     private readonly sysRoleWithMenuEntityRep: Repository<SysRoleWithMenuEntity>,
+    @InjectRepository(SysDeptEntity)
+    private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {
@@ -100,5 +103,39 @@ export class RoleService {
     return ResultData.success(res);
   }
 
-  async deptTree(roleId: number) {}
+  async deptTree(roleId: number) {
+    const res = await this.sysDeptEntityRep.find({
+      where: {
+        delFlag: '0',
+      },
+    });
+
+    const tree = ListToTree(
+      res,
+      (m) => m.deptId,
+      (m) => m.deptName,
+    );
+    const deptIds = await this.sysRoleWithDeptEntityRep.find({
+      where: {
+        roleId,
+      },
+      select: ['deptId'],
+    });
+    const checkedKeys = deptIds.map((item) => item.deptId);
+    return ResultData.success({
+      depts: tree,
+      checkedKeys,
+    });
+  }
+
+  async dataScope(updateDeptDto: UpdateRoleDto) {
+    const hasId = await this.sysRoleWithDeptEntityRep.findOne({
+      where: {
+        roleId: updateDeptDto.roleId,
+      },
+      select: ['roleId'],
+    });
+
+    // if (hasId)
+  }
 }

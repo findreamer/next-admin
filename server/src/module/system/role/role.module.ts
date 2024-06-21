@@ -5,6 +5,7 @@ import { RoleService } from './role.service';
 import { SysRoleEntity } from './entities/role.entity';
 import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
 import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
+import { SysDeptEntity } from '../dept/entities/dept.entity';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
       SysRoleEntity,
       SysRoleWithDeptEntity,
       SysRoleWithMenuEntity,
+      SysDeptEntity,
     ]),
   ],
   controllers: [RoleController],
