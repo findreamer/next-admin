@@ -8,7 +8,7 @@ import {
   IsEnum,
   IsPhoneNumber,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { StatusEnum } from '@app/common/enum';
 
 export enum SexEnum {
@@ -83,3 +83,13 @@ export class CreateUserDto {
   @IsNumber()
   postSort?: number;
 }
+
+export class UpdateUserDto extends PartialType(CreateUserDto) {
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  userId: number;
+}
+
+export class ChangeStatusDto {}

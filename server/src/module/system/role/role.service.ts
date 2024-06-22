@@ -12,6 +12,7 @@ import { ListToTree, ResultData } from '@app/common/utils';
 import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
 import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
 import { SysDeptEntity } from '../dept/entities/dept.entity';
+import { DataScopeEnum } from '@app/common/enum';
 
 @Injectable()
 export class RoleService {
@@ -128,14 +129,39 @@ export class RoleService {
     });
   }
 
-  async dataScope(updateDeptDto: UpdateRoleDto) {
+  // 更新角色信息以及关联角色-部门信息
+  async dataScope(updateRoleDto: UpdateRoleDto) {
     const hasId = await this.sysRoleWithDeptEntityRep.findOne({
       where: {
-        roleId: updateDeptDto.roleId,
+        roleId: updateRoleDto.roleId,
       },
       select: ['roleId'],
     });
 
-    // if (hasId)
+    // 角色已有权限 或者 非自定义权限，先删除权限关联
+    if (hasId || updateRoleDto.dataScope === DataScopeEnum.DATA_SCOPE_CUSTOM) {
+      await this.sysRoleWithDeptEntityRep.delete({
+        roleId: updateRoleDto.roleId,
+      });
+    }
+
+    const entity = this.sysRoleWithDeptEntityRep.createQueryBuilder('entity');
+    const values = updateRoleDto.deptIds.map((id) => {
+      return {
+        roleId: updateRoleDto.roleId,
+        deptId: id,
+      };
+    });
+
+    // 批量插入数据
+    entity.insert().values(values).execute();
+
+    delete updateRoleDto.deptIds;
+
+    const res = await this.sysRoleRepository.update(
+      { roleId: updateRoleDto.roleId },
+      updateRoleDto,
+    );
+    return ResultData.success(res);
   }
 }
