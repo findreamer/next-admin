@@ -7,9 +7,11 @@ import {
   IsArray,
   IsEnum,
   IsPhoneNumber,
+  IsNumberString,
 } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { StatusEnum } from '@app/common/enum';
+import { PagingDTO } from '@app/dto';
 
 export enum SexEnum {
   MALE = '0',
@@ -92,4 +94,99 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   userId: number;
 }
 
-export class ChangeStatusDto {}
+export class ChangeStatusDto {
+  @ApiProperty({
+    description: '用户ID',
+    required: true,
+  })
+  @IsNumber()
+  userId: number;
+
+  @ApiProperty({ required: true })
+  @IsString()
+  @IsEnum(StatusEnum)
+  status: number;
+}
+
+export class ListUserDto extends PagingDTO {
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsNumberString()
+  deptId?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  nickName?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  email?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  userName?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  phonenumber?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string;
+}
+
+export class ResetPwdDto {
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  userId: number;
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsString()
+  @Length(5, 20)
+  password: string;
+}
+
+export class AllocatedListDto extends PagingDTO {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  userName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  phonenumber?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsNumberString()
+  roleId?: string;
+}
