@@ -23,11 +23,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
+import { AllocatedListDto } from '../user/dto';
+import { UserService } from '../user/user.service';
 
 @ApiTags('角色管理')
 @Controller('system/role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+  constructor(
+    private readonly roleService: RoleService,
+    private readonly userService: UserService,
+  ) {}
 
   @ApiOperation({
     summary: '角色管理-创建',
@@ -119,10 +124,30 @@ export class RoleController {
     return this.roleService.dataScope(updateRoleDto);
   }
 
-  authUserAllocatedList() {}
+  @ApiOperation({
+    description: '角色管理-角色已分配用户列表',
+  })
+  @ApiQuery({
+    required: true,
+  })
+  @Get('/authUser/allocatedList')
+  authUserAllocatedList(@Query() query: AllocatedListDto) {
+    this.userService.allocatedList(query);
+  }
 
-  authUserUnAllocatedList() {}
+  @ApiOperation({
+    description: '角色管理-角色未分配用户列表',
+  })
+  @ApiQuery({
+    required: true,
+  })
+  @Get('/authUser/unallocatedList')
+  authUserUnAllocatedList(@Query() query: AllocatedListDto) {
+    return this.userService.unallocatedList(query);
+  }
 
+  @ApiBody({})
+  @Put('/authUser/cancel')
   authUserCancel() {}
 
   authUserCancelAll() {}

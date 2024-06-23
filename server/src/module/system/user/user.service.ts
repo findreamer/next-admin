@@ -1,8 +1,8 @@
-import { In } from 'typeorm';
+import { In, Not } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { GetNowDate, ResultData, GenerateUUID, Uniq } from '@app/common/utils';
-import { CreateUserDto } from './dto';
+import { AllocatedListDto, CreateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/sys-user.entity';
@@ -13,6 +13,7 @@ import { ClientInfoDto, LoginDto } from '@app/module/main/dto';
 import { SysUserWithPostEntity } from './entities/user-with-post.entity';
 import { SysUserWithRoleEntity } from './entities/user-with-role-entity';
 import * as bcrypt from 'bcrypt';
+import { SysDeptEntity } from '../dept/entities/dept.entity';
 
 @Injectable()
 export class UserService {
@@ -148,5 +149,101 @@ export class UserService {
     } catch (error) {
       return null;
     }
+  }
+
+  /**
+   * 获取角色已分配用户
+   * @param query
+   */
+  async allocatedList(query: AllocatedListDto) {
+    const roleWithRoleList = await this.sysUserWithRoleEntityRepository.find({
+      where: {
+        roleId: +query.roleId,
+      },
+      select: ['userId'],
+    });
+
+    if (roleWithRoleList.length === 0) {
+      return ResultData.success({
+        list: [],
+        total: 0,
+      });
+    }
+    const userIds = roleWithRoleList.map((item) => item.userId);
+    const entity = this.userRepository.createQueryBuilder('user');
+    entity.where(`user.delFlag = :delFlag`, { delFlag: '0' });
+    entity.andWhere(`user.status = :status`, { status: '0' });
+    entity.andWhere(`user.userIn In (:...userIds)`, { userIds });
+
+    if (query.userName) {
+      entity.andWhere(`user.userName LIKE :userName`, {
+        userName: `"%${query.userName}%"`,
+      });
+    }
+
+    if (query.phonenumber) {
+      entity.andWhere(`user.phonenumber LIKE :phonenumber`, {
+        phonenumber: `"%${query.phonenumber}%"`,
+      });
+    }
+
+    const { pageNum, pageSize } = query;
+    entity.skip(pageSize * (pageNum - 1)).take(pageSize);
+    // 联查部门详情
+    entity.leftJoinAndMapOne(
+      'user.dept',
+      SysDeptEntity,
+      'dept',
+      'dept.deptId = user.deptId',
+    );
+    const [list, total] = await entity.getManyAndCount();
+    return ResultData.success({
+      list,
+      total,
+    });
+  }
+
+  /**
+   * 获取角色未分配用户
+   * @param allocatedListDto
+   */
+  async unallocatedList(allocatedListDto: AllocatedListDto) {
+    const roleWithRoleList = await this.sysUserWithRoleEntityRepository.find({
+      where: {
+        roleId: +allocatedListDto.roleId,
+      },
+      select: ['userId'],
+    });
+
+    const userIds = roleWithRoleList.map((item) => item.userId);
+    const entity = this.userRepository.createQueryBuilder('user');
+    entity.where(`user.delFlag = :delFlag`, {
+      delFlag: '0',
+    });
+    entity.andWhere(`user.status = :status`, { status: '0' });
+    entity.andWhere({
+      userId: Not(In(userIds)),
+    });
+
+    if (allocatedListDto.userName) {
+      entity.andWhere(`user.userName LIKE "%${allocatedListDto.userName}%"`);
+    }
+
+    if (allocatedListDto.phonenumber) {
+      entity.andWhere(
+        `user.phonenumber LIKE "%%${allocatedListDto.phonenumber}"`,
+      );
+    }
+
+    const { pageNum, pageSize } = allocatedListDto;
+    entity.skip(pageSize * (pageNum - 1)).take(pageSize);
+
+    // 联查部门详情
+    entity.leftJoinAndMapOne(
+      'user.dept',
+      SysDeptEntity,
+      'dept',
+      'dept.deptId = user.deptId',
+    );
   }
 }
