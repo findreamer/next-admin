@@ -46,7 +46,23 @@ export class UserService {
       loginDate,
       userType: SYS_USER_TYPE.CUSTOM,
     });
-    // 待完成postEntity、roleEntity
+
+    // 存储关联信息-角色岗位
+    const postEntity =
+      this.sysUserWithPostEntityRepository.createQueryBuilder('post');
+    const postValues = createUserDto.postIds.map((id) => ({
+      useId: res.userId,
+      postId: id,
+    }));
+    postEntity.insert().values(postValues).execute();
+
+    const roleEntity =
+      this.sysUserWithRoleEntityRepository.createQueryBuilder('role');
+    const roleIds = createUserDto.roleIds.map((id) => ({
+      roleId: id,
+      userId: res.userId,
+    }));
+    roleEntity.insert().values(roleIds).execute();
 
     return ResultData.success();
   }
