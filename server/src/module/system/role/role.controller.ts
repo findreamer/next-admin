@@ -10,6 +10,9 @@ import {
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import {
+  AuthUserCancelAllDto,
+  AuthUserCancelDto,
+  AuthUserSelectAllDto,
   ChangeStatusDto,
   CreateRoleDto,
   ListRoleDto,
@@ -112,8 +115,8 @@ export class RoleController {
     return this.roleService.deptTree(+id);
   }
 
-  @ApiProperty({
-    description: '角色管理-数据权限修改',
+  @ApiOperation({
+    summary: '角色管理-数据权限修改',
   })
   @ApiBody({
     type: UpdateRoleDto,
@@ -125,7 +128,7 @@ export class RoleController {
   }
 
   @ApiOperation({
-    description: '角色管理-角色已分配用户列表',
+    summary: '角色管理-角色已分配用户列表',
   })
   @ApiQuery({
     required: true,
@@ -136,7 +139,7 @@ export class RoleController {
   }
 
   @ApiOperation({
-    description: '角色管理-角色未分配用户列表',
+    summary: '角色管理-角色未分配用户列表',
   })
   @ApiQuery({
     required: true,
@@ -146,11 +149,39 @@ export class RoleController {
     return this.userService.unallocatedList(query);
   }
 
-  @ApiBody({})
+  @ApiOperation({
+    summary: '角色管理-解绑角色',
+  })
+  @ApiBody({
+    type: AuthUserCancelDto,
+    required: true,
+  })
   @Put('/authUser/cancel')
-  authUserCancel() {}
+  authUserCancel(@Body() body: AuthUserCancelDto) {
+    return this.userService.authUserCancel(body);
+  }
 
-  authUserCancelAll() {}
+  @ApiOperation({
+    summary: '角色管理-批量解绑角色',
+  })
+  @ApiBody({
+    type: AuthUserCancelAllDto,
+    required: true,
+  })
+  @Put('/authUser/cancelAll')
+  authUserCancelAll(@Body() body: AuthUserCancelAllDto) {
+    return this.userService.authUserCancelAll(body);
+  }
 
-  authUserSelectAll() {}
+  @ApiOperation({
+    summary: '角色管理-批量绑定角色',
+  })
+  @ApiBody({
+    type: AuthUserSelectAllDto,
+    required: true,
+  })
+  @Put('/authUser/selectAll')
+  authUserSelectAll(@Body() body: AuthUserSelectAllDto) {
+    return this.userService.authUserSelectAll(body);
+  }
 }

@@ -14,6 +14,11 @@ import { SysUserWithPostEntity } from './entities/user-with-post.entity';
 import { SysUserWithRoleEntity } from './entities/user-with-role-entity';
 import * as bcrypt from 'bcrypt';
 import { SysDeptEntity } from '../dept/entities/dept.entity';
+import {
+  AuthUserCancelAllDto,
+  AuthUserCancelDto,
+  AuthUserSelectAllDto,
+} from '../role/dto';
 
 @Injectable()
 export class UserService {
@@ -245,5 +250,50 @@ export class UserService {
       'dept',
       'dept.deptId = user.deptId',
     );
+  }
+
+  /**
+   * 用户解绑角色
+   * @param data
+   */
+  async authUserCancel(data: AuthUserCancelDto) {
+    const res = await this.sysUserWithRoleEntityRepository.delete({
+      roleId: data.roleId,
+      userId: data.userId,
+    });
+
+    return ResultData.success(res);
+  }
+
+  /**
+   * 用户批量解绑角色
+   * @param data
+   */
+  async authUserCancelAll(data: AuthUserCancelAllDto) {
+    const userIds = (data.userIds || '').split(',').map((id) => Number(id));
+    const res = await this.sysUserWithRoleEntityRepository.delete({
+      roleId: data.roleId,
+      userId: In(userIds),
+    });
+
+    return ResultData.success(res);
+  }
+
+  /**
+   * 用户批量绑定角色
+   * @param data AuthUserSelectAllDto
+   */
+  async authUserSelectAll(data: AuthUserSelectAllDto) {
+    const userIds = (data.userIds || '').split(',');
+    const entities = userIds.map((userId) => {
+      const sysUserWithRoleEntity = new SysUserWithRoleEntity();
+      return Object.assign(sysUserWithRoleEntity, {
+        userId: Number(userId),
+        roleId: Number(data.roleId),
+      });
+    });
+
+    const res = await this.sysUserWithRoleEntityRepository.save(entities);
+    return ResultData.success(res);
   }
 }

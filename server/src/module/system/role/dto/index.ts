@@ -112,3 +112,45 @@ export class ListRoleDto extends PagingDTO {
   @IsString()
   roleId?: string;
 }
+
+export class AuthUserCancelDto {
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  roleId: number;
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  userId: number;
+}
+
+export class AuthUserCancelAllDto {
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  roleId: number;
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsString()
+  userIds: string;
+}
+
+export class AuthUserSelectAllDto {
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  roleId: number;
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsString()
+  userIds: string;
+}
