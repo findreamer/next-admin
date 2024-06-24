@@ -164,4 +164,20 @@ export class RoleService {
     );
     return ResultData.success(res);
   }
+
+  /**
+   * 根据角色Id异步查找与之关联的部门ID列表
+   * @param roleId - 角色的ID，用于查询与该角色关联的部门。
+   * @returns 返回一个Promise，该Promise解析为一个部门ID的数组。
+   */
+  async findRoleWithDeptIds(roleId: number) {
+    const res = await this.sysRoleWithDeptEntityRep.find({
+      where: {
+        roleId: roleId,
+      },
+      select: ['deptId'],
+    });
+
+    return res.map((item) => item.deptId);
+  }
 }

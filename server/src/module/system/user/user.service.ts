@@ -2,12 +2,12 @@ import { In, Not } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { GetNowDate, ResultData, GenerateUUID, Uniq } from '@app/common/utils';
-import { AllocatedListDto, CreateUserDto } from './dto';
+import { AllocatedListDto, CreateUserDto, ListUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/sys-user.entity';
 import { SYS_USER_TYPE } from '@app/common/constant';
-import { DelFlagEnum, StatusEnum } from '@app/common/enum';
+import { DataScopeEnum, DelFlagEnum, StatusEnum } from '@app/common/enum';
 
 import { ClientInfoDto, LoginDto } from '@app/module/main/dto';
 import { SysUserWithPostEntity } from './entities/user-with-post.entity';
@@ -19,6 +19,10 @@ import {
   AuthUserCancelDto,
   AuthUserSelectAllDto,
 } from '../role/dto';
+import { RoleService } from '../role/role.service';
+import { DeptService } from '../dept/dept.service';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import { SysPostEntity } from '../post/entities/post.entity';
 
 @Injectable()
 export class UserService {
@@ -29,7 +33,14 @@ export class UserService {
     private readonly sysUserWithPostEntityRepository: Repository<SysUserWithPostEntity>,
     @InjectRepository(SysUserWithRoleEntity)
     private readonly sysUserWithRoleEntityRepository: Repository<SysUserWithRoleEntity>,
+    @InjectRepository(SysDeptEntity)
+    private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
+    @InjectRepository(SysPostEntity)
+    private readonly sysPostEntityRep: Repository<SysPostEntity>,
     private readonly jwtService: JwtService,
+    private readonly roleService: RoleService,
+    private readonly deptService: DeptService,
+    private readonly redisService: RedisService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -65,6 +76,99 @@ export class UserService {
     roleEntity.insert().values(roleIds).execute();
 
     return ResultData.success();
+  }
+
+  /**
+   * 用户列表
+   * @param query
+   * @param user
+   */
+  async findAll(query: ListUserDto, user: any) {
+    const entity = this.userRepository.createQueryBuilder('user');
+    entity.where(`user.delFlag = :delFlag`, { delFlag: '0' });
+
+    // 数据权限过滤
+    if (user) {
+      const roles: Array<any> = user.roles || [];
+      const deptIds = [];
+      let dataScopeAll = false;
+      let dataScopeSlef = false;
+      for (let i = 0; i < roles.length; i++) {
+        const role = roles[i];
+        if (role.dataScope === DataScopeEnum.DATA_SCOPE_ALL) {
+          dataScopeAll = true;
+          break;
+        } else if (role.dataScope === DataScopeEnum.DATA_SCOPE_CUSTOM) {
+          const roleWithDeptIds = await this.roleService.findRoleWithDeptIds(
+            role.roleId,
+          );
+          deptIds.push(...roleWithDeptIds);
+        } else if (
+          role.dataScope === DataScopeEnum.DATA_SCOPE_DEPT ||
+          role.dataScope === DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD
+        ) {
+          const dataScopeWithDeptIds =
+            await this.deptService.findDeptIdsByDataScope(
+              user.deptId,
+              role.dataScope,
+            );
+          deptIds.push(...dataScopeWithDeptIds);
+        } else if (role.dataScope === DataScopeEnum.DATA_SCOPE_SELF) {
+          dataScopeSlef = true;
+        }
+      }
+
+      if (!dataScopeAll) {
+        if (deptIds.length > 0) {
+          entity.where(`user.deptId IN (:...deptIds)`, { deptIds });
+        } else if (dataScopeSlef) {
+          entity.where(`user.userId = :userId`, { userId: user.userId });
+        }
+      }
+    }
+
+    if (query.deptId) {
+      const deptIds = await this.deptService.findDeptIdsByDataScope(
+        +query.deptId,
+        DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD,
+      );
+      entity.andWhere('user.deptId In (:...deptIds)', { deptIds });
+    }
+
+    if (query.userName) {
+      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+    }
+
+    if (query.phonenumber) {
+      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+    }
+
+    if (query.status) {
+      entity.andWhere('user.status = :status', { status: query.status });
+    }
+
+    if (query.params?.beginTime && query.params?.endTime) {
+      entity.andWhere('user.createTime BETWEEN :start AND :end', {
+        start: query.params.beginTime,
+        end: query.params.endTime,
+      });
+    }
+
+    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    //联查部门详情
+    entity.leftJoinAndMapOne(
+      'user.dept',
+      SysDeptEntity,
+      'dept',
+      'dept.deptId = user.deptId',
+    );
+
+    const [list, total] = await entity.getManyAndCount();
+
+    return ResultData.success({
+      list,
+      total,
+    });
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
