@@ -79,7 +79,7 @@ export class UserService {
   }
 
   /**
-   * 用户列表
+   * 用户列表, 这里不太明白dataScope的设计，后续再看看
    * @param query
    * @param user
    */
@@ -203,7 +203,7 @@ export class UserService {
 
     const uuid = GenerateUUID();
     const token = this.createToken({ uuid, userId: userData.userId });
-    const permissions = this.getUserPermissions(userData.userId);
+    const permissions = await this.getUserPermissions(userData.userId);
   }
 
   async getRoleIds(userIds: Array<number>) {

@@ -166,6 +166,29 @@ export class RoleService {
   }
 
   /**
+   * 根据角色获取权限列表
+   */
+  async getPermissionsByRoleIds(roleIds: number[]) {
+    const list = await this.sysRoleWithMenuEntityRep.find({
+      where: {
+        roleId: In(roleIds),
+      },
+      select: ['menuId'],
+    });
+
+    const menuIds = list.map((item) => item.menuId);
+    const permission = await this.menuService.findMany({
+      where: {
+        delFlag: '0',
+        status: '0',
+        menuId: In(menuIds),
+      },
+    });
+
+    return permission;
+  }
+
+  /**
    * 根据角色Id异步查找与之关联的部门ID列表
    * @param roleId - 角色的ID，用于查询与该角色关联的部门。
    * @returns 返回一个Promise，该Promise解析为一个部门ID的数组。
