@@ -88,3 +88,27 @@ export class CreateMenuDto {
   @IsEnum(StatusEnum)
   visible: string;
 }
+
+export class UpdateMenuDto extends CreateMenuDto {
+  @ApiProperty({
+    required: true,
+  })
+  @IsNumber()
+  menuId: number;
+}
+
+export class ListMenuDto {
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  menuName?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string;
+}
