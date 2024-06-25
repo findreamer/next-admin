@@ -14,6 +14,7 @@ import { AxiosModule } from './module/axios/axios.module';
 import { PostModule } from './module/system/post/post.module';
 import { RoleModule } from './module/system/role/role.module';
 import { DeptModule } from './module/system/dept/dept.module';
+import { MenuModule } from './module/system/menu/menu.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { DeptModule } from './module/system/dept/dept.module';
     PostModule,
     RoleModule,
     DeptModule,
+    MenuModule,
   ],
   controllers: [],
   providers: [
