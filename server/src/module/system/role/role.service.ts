@@ -13,6 +13,7 @@ import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
 import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
 import { SysDeptEntity } from '../dept/entities/dept.entity';
 import { DataScopeEnum } from '@app/common/enum';
+import { MenuService } from '../menu/menu.service';
 
 @Injectable()
 export class RoleService {
@@ -25,6 +26,7 @@ export class RoleService {
     private readonly sysRoleWithMenuEntityRep: Repository<SysRoleWithMenuEntity>,
     @InjectRepository(SysDeptEntity)
     private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
+    private readonly menuService: MenuService,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {

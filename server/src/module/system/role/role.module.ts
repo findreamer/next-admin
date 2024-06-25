@@ -18,5 +18,6 @@ import { SysDeptEntity } from '../dept/entities/dept.entity';
   ],
   controllers: [RoleController],
   providers: [RoleService],
+  exports: [RoleService],
 })
 export class RoleModule {}
