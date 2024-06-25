@@ -21,7 +21,7 @@ import {
 } from '../role/dto';
 import { RoleService } from '../role/role.service';
 import { DeptService } from '../dept/dept.service';
-import { RedisService } from '@liaoliaots/nestjs-redis';
+import { RedisService } from '@app/module/redis/redis.service';
 import { SysPostEntity } from '../post/entities/post.entity';
 
 @Injectable()
