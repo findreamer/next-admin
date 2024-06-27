@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SysMenuEntity } from './entities/menu.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateMenuDto } from './dto';
 import { ResultData } from '@app/common/utils';
 
@@ -17,5 +17,7 @@ export class MenuService {
     return ResultData.success(res);
   }
 
-  findMany(args: any) {}
+  findMany(where: FindManyOptions<SysMenuEntity>) {
+    return this.sysMenuEntityRep.find(where);
+  }
 }

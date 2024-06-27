@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { FindManyOptions, In, Repository } from 'typeorm';
 import { SysRoleEntity } from './entities/role.entity';
 import {
   ChangeStatusDto,
@@ -167,8 +167,11 @@ export class RoleService {
     return ResultData.success(res);
   }
 
+  findRoles(where: FindManyOptions<SysRoleEntity>) {
+    return this.sysRoleRepository.find(where);
+  }
   /**
-   * 根据角色获取权限列表
+   * 根据角色获取菜单权限列表
    */
   async getPermissionsByRoleIds(roleIds: number[]) {
     const list = await this.sysRoleWithMenuEntityRep.find({

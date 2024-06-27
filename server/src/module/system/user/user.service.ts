@@ -23,6 +23,7 @@ import { RoleService } from '../role/role.service';
 import { DeptService } from '../dept/dept.service';
 import { RedisService } from '@app/module/redis/redis.service';
 import { SysPostEntity } from '../post/entities/post.entity';
+import { SysRoleEntity } from '../role/entities/role.entity';
 
 @Injectable()
 export class UserService {
@@ -204,8 +205,18 @@ export class UserService {
     const uuid = GenerateUUID();
     const token = this.createToken({ uuid, userId: userData.userId });
     const permissions = await this.getUserPermissions(userData.userId);
+    const deptData = await this.sysDeptEntityRep.findOne({
+      where: {
+        deptId: userData.deptId,
+      },
+      select: ['deptName'],
+    });
+    userData['deptName'] = deptData.deptName || '';
+
+    const roles = userData.roles.map((item) => item.roleKey);
   }
 
+  /** 通过用户id获取角色id */
   async getRoleIds(userIds: Array<number>) {
     const roleList = await this.sysUserWithRoleEntityRepository.find({
       where: {
@@ -213,7 +224,7 @@ export class UserService {
       },
     });
     const roleIds = roleList.map((item) => item.roleId);
-    return Uniq(roleIds);
+    return Uniq(roleIds) as number[];
   }
 
   /**
@@ -227,14 +238,18 @@ export class UserService {
       return ['*:*:*'];
     }
     const roleIds = await this.getRoleIds([userId]);
-    // const list = await this.roleService
+    const list = await this.roleService.getPermissionsByRoleIds(roleIds);
+    const permissions = (
+      Uniq(list.map((item) => item.perms)) as string[]
+    ).filter((item) => item.trim());
+    return permissions;
   }
   /**
    * 获取用户详情，todo: 补充部门信息，角色信息
    * @param userId
    * @returns
    */
-  async getUserInfo(userId: number): Promise<UserEntity> {
+  async getUserInfo(userId: number) {
     const entity = this.userRepository.createQueryBuilder('user');
 
     entity.where({
@@ -243,8 +258,43 @@ export class UserService {
     });
 
     // 联查部门详情
-    // entity.leftJoinAndMapOne('user.dept', )
-    const data = await entity.getOne();
+    entity.leftJoinAndMapOne(
+      'user.dept',
+      SysDeptEntity,
+      'dept',
+      'dept.deptId = user.deptId',
+    );
+    const roleIds = await this.getRoleIds([userId]);
+    const roles = await this.roleService.findRoles({
+      where: {
+        delFlag: '0',
+        roleId: In(roleIds),
+      },
+    });
+
+    const postIds = (
+      await this.sysUserWithPostEntityRepository.find({
+        where: {
+          userId: userId,
+        },
+        select: ['postId'],
+      })
+    ).map((item) => item.postId);
+
+    const posts = await this.sysPostEntityRep.find({
+      where: {
+        delFlag: '0',
+        postId: In(postIds),
+      },
+    });
+
+    const data = (await entity.getOne()) as UserEntity & {
+      roles: SysRoleEntity[];
+      posts: SysPostEntity[];
+    };
+    data['roles'] = roles;
+    data['posts'] = posts;
+
     return data;
   }
 
