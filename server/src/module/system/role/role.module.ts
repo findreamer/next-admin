@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleController } from './role.controller';
 import { RoleService } from './role.service';
@@ -7,6 +7,7 @@ import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
 import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
 import { SysDeptEntity } from '../dept/entities/dept.entity';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([
