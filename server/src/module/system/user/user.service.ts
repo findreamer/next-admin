@@ -6,8 +6,13 @@ import { AllocatedListDto, CreateUserDto, ListUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/sys-user.entity';
-import { SYS_USER_TYPE } from '@app/common/constant';
-import { DataScopeEnum, DelFlagEnum, StatusEnum } from '@app/common/enum';
+import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from '@app/common/constant';
+import {
+  CacheEnum,
+  DataScopeEnum,
+  DelFlagEnum,
+  StatusEnum,
+} from '@app/common/enum';
 
 import { ClientInfoDto, LoginDto } from '@app/module/main/dto';
 import { SysUserWithPostEntity } from './entities/user-with-post.entity';
@@ -214,6 +219,27 @@ export class UserService {
     userData['deptName'] = deptData.deptName || '';
 
     const roles = userData.roles.map((item) => item.roleKey);
+    const metaData = {
+      browser: clientInfo.browser,
+      ipaddr: clientInfo.ipaddr,
+      loginLocation: clientInfo.loginLocation,
+      loginTime: loginDate,
+      os: clientInfo.os,
+      permissions,
+      roles,
+      token: uuid,
+      user: userData,
+      userId: userData.userId,
+      username: userData.userName,
+      ddeptId: userData.deptId,
+    };
+
+    await this.redisService.set(
+      `${CacheEnum.LOGIN_TOKEN_KEY}${uuid}`,
+      metaData,
+      LOGIN_TOKEN_EXPIRESIN,
+    );
+    return ResultData.success({ token }, '登陆成功');
   }
 
   /** 通过用户id获取角色id */
