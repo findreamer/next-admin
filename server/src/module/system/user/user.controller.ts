@@ -37,4 +37,12 @@ export class UserController {
   deptTree() {
     return this.userService.deptTree();
   }
+
+  @ApiOperation({
+    summary: '用户-角色+岗位',
+  })
+  @Get()
+  findPostAndRoleAll() {
+    return this.userService.findPostAndRoleAll();
+  }
 }

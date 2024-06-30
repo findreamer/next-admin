@@ -185,6 +185,28 @@ export class UserService {
     return ResultData.success(tree);
   }
 
+  /**
+   * 获取用户角色和岗位
+   * @returns
+   */
+  async findPostAndRoleAll() {
+    const posts = await this.sysPostEntityRep.find({
+      where: {
+        delFlag: '0',
+      },
+    });
+    const roles = await this.roleService.findRoles({
+      where: {
+        delFlag: '0',
+      },
+    });
+
+    return ResultData.success({
+      posts,
+      roles,
+    });
+  }
+
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
     const data = await this.userRepository.findOne({
       where: {
