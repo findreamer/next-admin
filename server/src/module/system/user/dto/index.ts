@@ -103,7 +103,7 @@ export class ChangeStatusDto {
   @ApiProperty({ required: true })
   @IsString()
   @IsEnum(StatusEnum)
-  status: number;
+  status: string;
 }
 
 export class ListUserDto extends PagingDTO {

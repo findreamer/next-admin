@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, ListUserDto } from './dto';
+import { ChangeStatusDto, CreateUserDto, ListUserDto } from './dto';
 import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
 import { ApiOperation, ApiBody, ApiTags } from '@nestjs/swagger';
 
@@ -77,5 +77,17 @@ export class UserController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
+  }
+
+  @ApiOperation({
+    summary: '用户-停用角色',
+  })
+  @ApiBody({
+    type: ChangeStatusDto,
+    required: true,
+  })
+  @Put('/changeStatus')
+  changeStatus(@Body() changeStatus: ChangeStatusDto) {
+    return this.userService.changeStatus(changeStatus);
   }
 }

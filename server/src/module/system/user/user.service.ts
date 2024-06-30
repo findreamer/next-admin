@@ -2,7 +2,12 @@ import { In, Not } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { GetNowDate, ResultData, GenerateUUID, Uniq } from '@app/common/utils';
-import { AllocatedListDto, CreateUserDto, ListUserDto } from './dto';
+import {
+  AllocatedListDto,
+  ChangeStatusDto,
+  CreateUserDto,
+  ListUserDto,
+} from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/sys-user.entity';
@@ -324,6 +329,30 @@ export class UserService {
       roles: allRoles,
       roleIds,
     });
+  }
+
+  async changeStatus(changeStatus: ChangeStatusDto) {
+    const userData = await this.userRepository.findOne({
+      where: {
+        userId: changeStatus.userId,
+      },
+      select: ['userType'],
+    });
+
+    if (userData.userType === SYS_USER_TYPE.SYS) {
+      return ResultData.fail(500, '系统角色不可停用');
+    }
+
+    const res = await this.userRepository.update(
+      {
+        userId: changeStatus.userId,
+      },
+      {
+        status: changeStatus.status,
+      },
+    );
+
+    return ResultData.success(res);
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
