@@ -177,6 +177,14 @@ export class UserService {
     });
   }
 
+  /**
+   * 部门树
+   */
+  async deptTree() {
+    const tree = await this.deptService.deptTree();
+    return ResultData.success(tree);
+  }
+
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
     const data = await this.userRepository.findOne({
       where: {

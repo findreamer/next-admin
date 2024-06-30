@@ -29,4 +29,12 @@ export class UserController {
     const user = req.user.user;
     return this.userService.findAll(query, user);
   }
+
+  @ApiOperation({
+    summary: '用户-部门树',
+  })
+  @Get('/deptTree')
+  deptTree() {
+    return this.userService.deptTree();
+  }
 }
