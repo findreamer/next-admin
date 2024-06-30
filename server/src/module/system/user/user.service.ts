@@ -242,6 +242,11 @@ export class UserService {
     });
   }
 
+  /**
+   * 更新用户角色信息
+   * @param query ?roleIds=1,2,3&userId=abc
+   * @returns
+   */
   async updateAuthRole(query) {
     const roleIds = query.roleIds.split(',');
     if (roleIds?.length) {
@@ -272,6 +277,53 @@ export class UserService {
     }
 
     return ResultData.success();
+  }
+
+  async findOne(userId: number) {
+    const data = await this.userRepository.findOne({
+      where: {
+        delFlag: '0',
+        userId: userId,
+      },
+    });
+
+    const dept = await this.sysDeptEntityRep.findOne({
+      where: {
+        delFlag: '0',
+        deptId: data.deptId,
+      },
+    });
+    data['dept'] = dept;
+
+    const postList = await this.sysUserWithPostEntityRepository.find({
+      where: {
+        userId: userId,
+      },
+      select: ['postId'],
+    });
+
+    const postIds = postList.map((item) => item.postId);
+    const allPosts = await this.sysPostEntityRep.find({
+      where: {
+        delFlag: '0',
+      },
+    });
+    const roleIds = await this.getRoleIds([userId]);
+    const allRoles = await this.roleService.findRoles({
+      where: {
+        delFlag: '0',
+      },
+    });
+
+    data['roles'] = allRoles.filter((item) => roleIds.includes(item.roleId));
+
+    return ResultData.success({
+      data,
+      postIds,
+      posts: allPosts,
+      roles: allRoles,
+      roleIds,
+    });
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {

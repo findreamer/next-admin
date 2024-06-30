@@ -70,4 +70,12 @@ export class UserController {
   updateAuthRole(@Query() query) {
     return this.userService.updateAuthRole(query);
   }
+
+  @ApiOperation({
+    summary: '用户-详情',
+  })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(+id);
+  }
 }
