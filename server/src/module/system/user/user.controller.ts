@@ -6,6 +6,7 @@ import {
   Query,
   Request,
   Param,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, ListUserDto } from './dto';
@@ -60,5 +61,13 @@ export class UserController {
   @Get('/authRole/:id')
   authRole(@Param('id') id: string) {
     return this.userService.authRole(+id);
+  }
+
+  @ApiOperation({
+    summary: '用户-角色信息更新',
+  })
+  @Put('/authROle')
+  updateAuthRole(@Query() query) {
+    return this.userService.updateAuthRole(query);
   }
 }

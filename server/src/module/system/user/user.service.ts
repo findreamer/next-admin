@@ -207,6 +207,10 @@ export class UserService {
     });
   }
 
+  /**
+   * 获取角色详情
+   * @param userId
+   */
   async authRole(userId: number) {
     const allRoles = await this.roleService.findRoles({
       where: {
@@ -236,6 +240,38 @@ export class UserService {
       }
       return true;
     });
+  }
+
+  async updateAuthRole(query) {
+    const roleIds = query.roleIds.split(',');
+    if (roleIds?.length) {
+      // 用户已有角色，删除所有关联角色
+      const hasRoleId = await this.sysUserWithRoleEntityRepository.findOne({
+        where: {
+          userId: query.uerId,
+        },
+        select: ['roleId'],
+      });
+
+      if (hasRoleId) {
+        await this.sysUserWithRoleEntityRepository.delete({
+          userId: query.userId,
+        });
+      }
+
+      const roleEntity =
+        this.sysUserWithRoleEntityRepository.createQueryBuilder('roleEntity');
+      const roleValues = roleIds.map((id) => {
+        return {
+          userIs: query.useId,
+          roleId: id,
+        };
+      });
+
+      roleEntity.insert().values(roleValues).execute();
+    }
+
+    return ResultData.success();
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
