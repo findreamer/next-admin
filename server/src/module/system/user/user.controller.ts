@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Query, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  Request,
+  Param,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, ListUserDto } from './dto';
 import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
@@ -44,5 +52,13 @@ export class UserController {
   @Get()
   findPostAndRoleAll() {
     return this.userService.findPostAndRoleAll();
+  }
+
+  @ApiOperation({
+    summary: '用户-分配角色-详情',
+  })
+  @Get('/authRole/:id')
+  authRole(@Param('id') id: string) {
+    return this.userService.authRole(+id);
   }
 }

@@ -207,6 +207,37 @@ export class UserService {
     });
   }
 
+  async authRole(userId: number) {
+    const allRoles = await this.roleService.findRoles({
+      where: {
+        delFlag: '0',
+      },
+    });
+
+    const user = await this.userRepository.findOne({
+      where: {
+        delFlag: '0',
+        userId,
+      },
+    });
+
+    const dept = await this.sysDeptEntityRep.findOne({
+      where: {
+        delFlag: '0',
+        deptId: user.deptId,
+      },
+    });
+
+    user['dept'] = dept;
+    const roleIds = await this.getRoleIds([userId]);
+    user['roles'] = allRoles.filter((item) => {
+      if (roleIds.includes(item.roleId)) {
+        item['flag'] = true;
+      }
+      return true;
+    });
+  }
+
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
     const data = await this.userRepository.findOne({
       where: {
