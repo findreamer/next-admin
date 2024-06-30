@@ -9,7 +9,12 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ChangeStatusDto, CreateUserDto, ListUserDto } from './dto';
+import {
+  ChangeStatusDto,
+  CreateUserDto,
+  ListUserDto,
+  UpdateUserDto,
+} from './dto';
 import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
 import { ApiOperation, ApiBody, ApiTags } from '@nestjs/swagger';
 
@@ -89,5 +94,17 @@ export class UserController {
   @Put('/changeStatus')
   changeStatus(@Body() changeStatus: ChangeStatusDto) {
     return this.userService.changeStatus(changeStatus);
+  }
+
+  @ApiOperation({
+    summary: '用户-更新',
+  })
+  @ApiBody({
+    type: UpdateUserDto,
+    required: true,
+  })
+  @Put()
+  update(@Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(updateUserDto);
   }
 }

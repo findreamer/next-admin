@@ -7,6 +7,7 @@ import {
   ChangeStatusDto,
   CreateUserDto,
   ListUserDto,
+  UpdateUserDto,
 } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -331,6 +332,11 @@ export class UserService {
     });
   }
 
+  /**
+   * 修改用户状态
+   * @param changeStatus
+   * @returns
+   */
   async changeStatus(changeStatus: ChangeStatusDto) {
     const userData = await this.userRepository.findOne({
       where: {
@@ -353,6 +359,73 @@ export class UserService {
     );
 
     return ResultData.success(res);
+  }
+
+  async update(updateUserDto: UpdateUserDto) {
+    //用户已有角色,先删除所有关联角色
+    if (updateUserDto?.postIds?.length > 0) {
+      const hasPostId = await this.sysUserWithPostEntityRepository.findOne({
+        where: {
+          userId: updateUserDto.userId,
+        },
+      });
+
+      if (hasPostId) {
+        await this.sysUserWithPostEntityRepository.delete({
+          userId: updateUserDto.userId,
+        });
+      }
+
+      const postEntity =
+        this.sysUserWithPostEntityRepository.createQueryBuilder('postEntity');
+      const postValues: SysUserWithPostEntity[] = updateUserDto.postIds.map(
+        (id) => ({
+          userId: updateUserDto.userId,
+          postId: id,
+        }),
+      );
+
+      postEntity.insert().values(postValues).execute();
+    }
+
+    //用户已有角色,先删除所有关联角色
+    if (updateUserDto?.roleIds?.length > 0) {
+      const hasRoleId = await this.sysUserWithRoleEntityRepository.findOne({
+        where: {
+          userId: updateUserDto.userId,
+        },
+      });
+
+      if (hasRoleId) {
+        await this.sysUserWithRoleEntityRepository.delete({
+          userId: updateUserDto.userId,
+        });
+      }
+
+      const roleEntity =
+        this.sysUserWithRoleEntityRepository.createQueryBuilder('roleEntity');
+      const roleValues: SysUserWithRoleEntity[] = updateUserDto.roleIds.map(
+        (id) => ({
+          userId: updateUserDto.userId,
+          roleId: id,
+        }),
+      );
+
+      roleEntity.insert().values(roleValues).execute();
+    }
+
+    delete updateUserDto.password;
+    delete (updateUserDto as any).dept;
+    delete (updateUserDto as any).roles;
+    delete (updateUserDto as any).roleIds;
+    delete (updateUserDto as any).postIds;
+
+    // 更新用户信息
+    const data = await this.userRepository.update(
+      { userId: updateUserDto.userId },
+      updateUserDto,
+    );
+    return ResultData.success(data);
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
