@@ -45,6 +45,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (!atUserId)
       throw new UnauthorizedException('当前登录已过期，请重新登录');
 
+    // req['user'] = atUserId
     // 待完成，校验 token 是否 过期
     return this.activate(ctx);
   }
