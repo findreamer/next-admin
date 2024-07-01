@@ -13,6 +13,7 @@ import {
   ChangeStatusDto,
   CreateUserDto,
   ListUserDto,
+  ResetPwdDto,
   UpdateUserDto,
 } from './dto';
 import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
@@ -106,5 +107,16 @@ export class UserController {
   @Put()
   update(@Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(updateUserDto);
+  }
+
+  @ApiOperation({
+    summary: '用户-重置密码',
+  })
+  @ApiBody({
+    type: ResetPwdDto,
+    required: true,
+  })
+  restpwd(@Body() resetPwdDto: ResetPwdDto) {
+    return this.userService.resetPwd(resetPwdDto);
   }
 }

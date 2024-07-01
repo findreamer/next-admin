@@ -7,6 +7,7 @@ import {
   ChangeStatusDto,
   CreateUserDto,
   ListUserDto,
+  ResetPwdDto,
   UpdateUserDto,
 } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -426,6 +427,29 @@ export class UserService {
       updateUserDto,
     );
     return ResultData.success(data);
+  }
+
+  async resetPwd(resetPwdDto: ResetPwdDto) {
+    if (resetPwdDto.userId === 1) {
+      return ResultData.fail(500, '系统管理员密码无法修改');
+    }
+
+    if (resetPwdDto.password) {
+      resetPwdDto.password = await bcrypt.hashSync(
+        resetPwdDto.password,
+        bcrypt.genSaltSync(10),
+      );
+    }
+    await this.userRepository.update(
+      {
+        userId: resetPwdDto.userId,
+      },
+      {
+        password: resetPwdDto.password,
+      },
+    );
+
+    return ResultData.success();
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
