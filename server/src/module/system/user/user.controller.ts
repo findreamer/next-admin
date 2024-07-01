@@ -7,6 +7,7 @@ import {
   Request,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
@@ -118,5 +119,14 @@ export class UserController {
   })
   restpwd(@Body() resetPwdDto: ResetPwdDto) {
     return this.userService.resetPwd(resetPwdDto);
+  }
+
+  @ApiOperation({
+    summary: '用户-删除',
+  })
+  @Delete(':id')
+  remove(@Param('id') ids: string) {
+    const userIds = ids.split(',').map((id) => Number(id));
+    return this.userService.remove(userIds);
   }
 }

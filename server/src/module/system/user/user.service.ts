@@ -452,6 +452,26 @@ export class UserService {
     return ResultData.success();
   }
 
+  /**
+   * 批量删除用户
+   * @param ids
+   * @returns
+   */
+  async remove(ids: number[]) {
+    // 忽略系统角色的删除
+    const data = await this.userRepository.update(
+      {
+        userId: In(ids),
+        userType: Not(SYS_USER_TYPE.SYS),
+      },
+      {
+        delFlag: '1',
+      },
+    );
+
+    return ResultData.success(data);
+  }
+
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
     const data = await this.userRepository.findOne({
       where: {
