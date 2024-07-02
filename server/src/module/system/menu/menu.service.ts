@@ -79,4 +79,13 @@ export class MenuService {
       checkedKeys,
     });
   }
+
+  async findOne(id: number) {
+    const res = await this.sysMenuEntityRep.findOne({
+      where: {
+        menuId: id,
+      },
+    });
+    return ResultData.success(res);
+  }
 }

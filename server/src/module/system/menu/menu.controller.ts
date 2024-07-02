@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import { CreateMenuDto, ListMenuDto } from './dto';
@@ -42,5 +42,13 @@ export class MenuController {
   @Get('/roleMenuTreeselect/:id')
   roleMenuTreeselect(@Query('id') id: string) {
     return this.menuService.roleMenuTreeselect(+id);
+  }
+
+  @ApiOperation({
+    summary: '菜单管理-详情',
+  })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.menuService.findOne(+id);
   }
 }
