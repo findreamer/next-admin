@@ -35,4 +35,12 @@ export class MenuController {
   treeSelect() {
     return this.menuService.treeSelect();
   }
+
+  @ApiOperation({
+    summary: '菜单管理-角色-树表',
+  })
+  @Get('/roleMenuTreeselect/:id')
+  roleMenuTreeselect(@Query('id') id: string) {
+    return this.menuService.roleMenuTreeselect(+id);
+  }
 }
