@@ -1,6 +1,9 @@
 
+import {Button} from 'antd'
 export default function Home() {
   return (
-    <div>132132</div>
+    <section className='w-100'>
+      <Button type="primary">Primary</Button>
+    </section>
   );
 }
