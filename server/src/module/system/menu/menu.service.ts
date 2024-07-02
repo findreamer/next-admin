@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SysMenuEntity } from './entities/menu.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { CreateMenuDto, ListMenuDto } from './dto';
-import { ResultData } from '@app/common/utils';
+import { ListToTree, ResultData } from '@app/common/utils';
 
 @Injectable()
 export class MenuService {
@@ -36,5 +36,19 @@ export class MenuService {
     }
     const res = await entity.getMany();
     return ResultData.success(res);
+  }
+
+  async treeSelect() {
+    const res = await this.sysMenuEntityRep.find({
+      where: {
+        delFlag: '0',
+      },
+    });
+    const tree = ListToTree(
+      res,
+      (m) => m.menuId,
+      (m) => m.menuName,
+    );
+    return ResultData.success(tree);
   }
 }

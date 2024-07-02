@@ -27,4 +27,12 @@ export class MenuController {
   findAll(@Query() query: ListMenuDto) {
     return this.menuService.findAll(query);
   }
+
+  @ApiOperation({
+    summary: '菜单管理-树表',
+  })
+  @Get('/treeselect')
+  treeSelect() {
+    return this.menuService.treeSelect();
+  }
 }
