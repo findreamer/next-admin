@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SysMenuEntity } from './entities/menu.entity';
 import { FindManyOptions, Repository } from 'typeorm';
-import { CreateMenuDto, ListMenuDto } from './dto';
+import { CreateMenuDto, ListMenuDto, UpdateMenuDto } from './dto';
 import { ListToTree, ResultData } from '@app/common/utils';
 import { SysRoleWithMenuEntity } from '../role/entities/role-width-menu.entity';
 
@@ -86,6 +86,14 @@ export class MenuService {
         menuId: id,
       },
     });
+    return ResultData.success(res);
+  }
+
+  async update(updateMenuDto: UpdateMenuDto) {
+    const res = await this.sysMenuEntityRep.update(
+      { menuId: updateMenuDto.menuId },
+      updateMenuDto,
+    );
     return ResultData.success(res);
   }
 }

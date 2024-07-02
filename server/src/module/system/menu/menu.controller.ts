@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
-import { CreateMenuDto, ListMenuDto } from './dto';
+import { CreateMenuDto, ListMenuDto, UpdateMenuDto } from './dto';
 
 @ApiTags('菜单管理')
 @Controller('system/menu')
@@ -50,5 +50,14 @@ export class MenuController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.menuService.findOne(+id);
+  }
+
+  @ApiBody({
+    type: UpdateMenuDto,
+    required: true,
+  })
+  @Put()
+  update(@Body() updateMenuDto: UpdateMenuDto) {
+    return this.menuService.update(updateMenuDto);
   }
 }
