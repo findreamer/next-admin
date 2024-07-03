@@ -96,4 +96,12 @@ export class MenuService {
     );
     return ResultData.success(res);
   }
+
+  async remove(id: number) {
+    const res = await this.sysMenuEntityRep.update(
+      { menuId: id },
+      { delFlag: '1' },
+    );
+    return ResultData.success(res);
+  }
 }
