@@ -15,6 +15,7 @@ import { PostModule } from './module/system/post/post.module';
 import { RoleModule } from './module/system/role/role.module';
 import { DeptModule } from './module/system/dept/dept.module';
 import { MenuModule } from './module/system/menu/menu.module';
+import { ToolModule } from './module/system/tool/tool.module';
 
 @Module({
   imports: [
@@ -58,12 +59,13 @@ import { MenuModule } from './module/system/menu/menu.module';
     HttpModule,
     AuthModule,
     UserModule,
-    MainModule,
-    AxiosModule,
-    PostModule,
-    RoleModule,
+    ToolModule,
     DeptModule,
     MenuModule,
+    RoleModule,
+    PostModule,
+    MainModule,
+    AxiosModule,
   ],
   controllers: [],
   providers: [
