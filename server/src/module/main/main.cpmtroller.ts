@@ -31,4 +31,9 @@ export class MainController {
 
     return this.mainService.login(user, clientInfo);
   }
+
+  @Post('/logout')
+  logout() {
+    return this.mainService.logout();
+  }
 }
