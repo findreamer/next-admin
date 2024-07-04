@@ -17,7 +17,6 @@ import {
   ResetPwdDto,
   UpdateUserDto,
 } from './dto';
-import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
 import { ApiOperation, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('用户管理')

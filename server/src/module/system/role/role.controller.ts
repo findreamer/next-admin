@@ -25,7 +25,6 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
 import { AllocatedListDto } from '../user/dto';
 import { UserService } from '../user/user.service';
 
@@ -45,7 +44,6 @@ export class RoleController {
     required: true,
   })
   @Post()
-  @AllowAnon()
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.create(createRoleDto);
   }
@@ -57,7 +55,6 @@ export class RoleController {
     required: true,
   })
   @Get('/list')
-  @AllowAnon()
   findAll(@Query() query: ListRoleDto) {
     return this.roleService.findAll(query);
   }
@@ -66,7 +63,6 @@ export class RoleController {
     summary: '角色管理-详情',
   })
   @Get(':id')
-  @AllowAnon()
   findOne(@Param('id') id: string) {
     return this.roleService.findOne(+id);
   }

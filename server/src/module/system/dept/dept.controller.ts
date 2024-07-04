@@ -12,7 +12,6 @@ import {
 import { DeptService } from './dept.service';
 import { CreateDeptDto, ListDeptDto, UpdateDeptDto } from './dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AllowAnon } from '@app/common/decorators/allow-anon.decorator';
 
 @ApiTags('部门管理')
 @Controller('system/dept')
@@ -28,7 +27,6 @@ export class DeptController {
   })
   @Post()
   @HttpCode(200)
-  @AllowAnon()
   create(@Body() createDeptDto: CreateDeptDto) {
     return this.deptService.create(createDeptDto);
   }
@@ -37,7 +35,6 @@ export class DeptController {
     summary: '部门管理-列表',
   })
   @Get('/list')
-  @AllowAnon()
   findAll(@Query() query: ListDeptDto) {
     return this.deptService.findAll(query);
   }
