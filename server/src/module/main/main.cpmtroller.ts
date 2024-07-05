@@ -33,7 +33,17 @@ export class MainController {
   }
 
   @Post('/logout')
-  logout() {
-    return this.mainService.logout();
+  logout(@Req() req: Request) {
+    const agent = Useragent.parse(req.headers['user-agent']);
+    const os = agent.os.toJSON().family;
+    const browser = agent.toAgent();
+    const clientInfo: ClientInfoDto = {
+      userAgent: req.headers['user-agent'],
+      ipaddr: req.ip,
+      browser: browser,
+      os: os,
+      loginLocation: '',
+    };
+    return this.mainService.logout(clientInfo);
   }
 }
