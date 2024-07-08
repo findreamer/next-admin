@@ -1,3 +1,4 @@
+import { BaseEntity } from '@app/common/entities/base';
 import {
   Column,
   CreateDateColumn,
@@ -8,7 +9,7 @@ import {
 @Entity('sys_logininfor', {
   comment: '系统访问记录',
 })
-export class MonitorLoginlogEntity {
+export class MonitorLoginlogEntity extends BaseEntity {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'infor_id',
