@@ -37,6 +37,7 @@ import { ToolModule } from './module/system/tool/tool.module';
           entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
           keepConnectionAlive: true,
+          // synchronize: process.env.NODE_ENV === 'production' ? false : true,
           ...config.get('db.mysql'),
         } as TypeOrmModuleOptions;
       },
