@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    // {
+    //   "name": "Run Server",
+    //   "type": "node",
+    //   "request": "launch",
+    //   "runtimeExecutable": "npm",
+    //   "runtimeArgs": [
+    //     "run",
+    //     "start:dev"
+    //   ],
+    //   "cwd": "${workspaceFolder}/server"
+    // },
+    {
+      "name": "Run Web",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "cwd": "${workspaceFolder}/web"
+    }
+  ]
+}

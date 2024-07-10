@@ -1,5 +1,6 @@
 'use client'
 import LoginForm from '@/components/LoginForm'
+import './index.css'
 
 const LoginPage = () => {
   const handleSubmit = async () => {
