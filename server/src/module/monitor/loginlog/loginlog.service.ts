@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { MonitorLoginlogEntity } from './entities/loginlog.entity';
 import { ListLoginlogDto } from './dto';
 import { ResultData } from '@app/common/utils';
@@ -49,5 +49,18 @@ export class LoginlogService {
     entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     const [list, total] = await entity.getManyAndCount();
     return ResultData.success({ list, total });
+  }
+
+  async removeAll() {
+    await this.monitorLoginlogEntityRep.update(
+      {
+        inforId: Not(IsNull()),
+      },
+      {
+        delFlag: '1',
+      },
+    );
+
+    return ResultData.success();
   }
 }

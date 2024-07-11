@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Query } from '@nestjs/common';
 import { LoginlogService } from './loginlog.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ListLoginlogDto } from './dto';
@@ -16,5 +16,13 @@ export class LoginlogController {
   @Get('/list')
   findAll(@Query() query: ListLoginlogDto) {
     return this.loginlogService.findAll(query);
+  }
+
+  @ApiOperation({
+    summary: '登陆日志-清空',
+  })
+  @Delete('/clean')
+  removeAll() {
+    return this.loginlogService.removeAll();
   }
 }
