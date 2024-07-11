@@ -16,6 +16,7 @@ import { RoleModule } from './module/system/role/role.module';
 import { DeptModule } from './module/system/dept/dept.module';
 import { MenuModule } from './module/system/menu/menu.module';
 import { ToolModule } from './module/system/tool/tool.module';
+import { LoginlogModule } from './module/monitor/loginlog/loginlog.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { ToolModule } from './module/system/tool/tool.module';
     PostModule,
     MainModule,
     AxiosModule,
+    LoginlogModule,
   ],
   controllers: [],
   providers: [

@@ -9,5 +9,6 @@ import { MonitorLoginlogEntity } from './entities/loginlog.entity';
   imports: [TypeOrmModule.forFeature([MonitorLoginlogEntity])],
   providers: [LoginlogService],
   controllers: [LoginlogController],
+  exports: [LoginlogService],
 })
 export class LoginlogModule {}

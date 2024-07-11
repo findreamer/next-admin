@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Not, Repository } from 'typeorm';
 import { MonitorLoginlogEntity } from './entities/loginlog.entity';
-import { ListLoginlogDto } from './dto';
+import { CreateLoginlogDto, ListLoginlogDto } from './dto';
 import { ResultData } from '@app/common/utils';
 
 @Injectable()
@@ -74,5 +74,9 @@ export class LoginlogService {
       },
     );
     return ResultData.success(res);
+  }
+
+  async create(createLoginlogDto: CreateLoginlogDto) {
+    return await this.monitorLoginlogEntityRep.save(createLoginlogDto);
   }
 }

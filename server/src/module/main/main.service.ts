@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../system/user/user.service';
 import { ClientInfoDto, LoginDto } from './dto';
 import { AxiosService } from '../axios/axios.service';
-import { ResultData } from '@app/common/utils';
+import { ResultData, SUCCESS_CODE } from '@app/common/utils';
+import { LoginlogService } from '../monitor/loginlog/loginlog.service';
 
 @Injectable()
 export class MainService {
   constructor(
     private readonly userService: UserService,
     private readonly axiosService: AxiosService,
+    private readonly loginlogService: LoginlogService,
   ) {}
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
@@ -27,9 +29,14 @@ export class MainService {
     } catch (error) {}
 
     const loginRes = await this.userService.login(user, loginLog);
+    loginLog.status = loginRes.code === SUCCESS_CODE ? '0' : '1';
+    loginLog.msg = loginRes.msg;
+    this.loginlogService.create(loginLog);
+
+    return loginRes;
   }
 
-  async loutgn(clientInfo: ClientInfoDto) {
+  async logout(clientInfo: ClientInfoDto) {
     const loginLog = {
       ...clientInfo,
       userName: '',
@@ -43,7 +50,7 @@ export class MainService {
       loginLog.loginLocation = loginLocation;
     } catch (error) {}
 
-    this.loginlogService.create(loginLocation);
+    this.loginlogService.create(loginLog);
     return ResultData.success();
   }
 }
