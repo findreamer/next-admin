@@ -17,6 +17,7 @@ import { DeptModule } from './module/system/dept/dept.module';
 import { MenuModule } from './module/system/menu/menu.module';
 import { ToolModule } from './module/system/tool/tool.module';
 import { LoginlogModule } from './module/monitor/loginlog/loginlog.module';
+import { CacheModule } from './module/cache/cache.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { LoginlogModule } from './module/monitor/loginlog/loginlog.module';
     MainModule,
     AxiosModule,
     LoginlogModule,
+    CacheModule,
   ],
   controllers: [],
   providers: [
