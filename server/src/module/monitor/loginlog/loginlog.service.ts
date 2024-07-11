@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { MonitorLoginlogEntity } from './entities/loginlog.entity';
 import { ListLoginlogDto } from './dto';
 import { ResultData } from '@app/common/utils';
@@ -62,5 +62,17 @@ export class LoginlogService {
     );
 
     return ResultData.success();
+  }
+
+  async remove(ids: number[]) {
+    const res = await this.monitorLoginlogEntityRep.update(
+      {
+        inforId: In(ids),
+      },
+      {
+        delFlag: '1',
+      },
+    );
+    return ResultData.success(res);
   }
 }

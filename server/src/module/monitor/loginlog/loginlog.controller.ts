@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { LoginlogService } from './loginlog.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ListLoginlogDto } from './dto';
@@ -24,5 +24,14 @@ export class LoginlogController {
   @Delete('/clean')
   removeAll() {
     return this.loginlogService.removeAll();
+  }
+
+  @ApiOperation({
+    summary: '登陆日志-删除',
+  })
+  @Delete(':id')
+  remove(@Param('id') ids: string) {
+    const infoIds = ids.split(',').map((id) => +id);
+    return this.loginlogService.remove(infoIds);
   }
 }
