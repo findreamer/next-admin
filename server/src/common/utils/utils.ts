@@ -60,3 +60,7 @@ export function ListToTree(arr: Array<any>, getId, getLabel) {
 
   return lData;
 }
+
+export function DeepClone(obj: object) {
+  return Lodash.cloneDeep(obj);
+}

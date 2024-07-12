@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@app/module/redis/redis.service';
-import { ResultData } from '@app/common/utils';
+import { DeepClone, ResultData } from '@app/common/utils';
 @Injectable()
 export class CacheService {
   constructor(private readonly redisService: RedisService) {}
@@ -67,5 +67,30 @@ export class CacheService {
   async getKeys(id: string) {
     const data = await this.redisService.keys(id + '*');
     return ResultData.success(data);
+  }
+
+  async getValue(params: any) {
+    const list = DeepClone(this.caches) as Array<any>;
+    const data = list.find((item) => item.cacheName === params.cacheName);
+    const cacheValue = await this.redisService.get(params.cacheKey);
+    data.cacheValue = JSON.stringify(cacheValue);
+    data.cacheKey = params.cacheKey;
+    return ResultData.success(data);
+  }
+
+  async clearCacheName(cacheName: string) {
+    const key = await this.redisService.keys(cacheName + '*');
+    const res = await this.redisService.del(key);
+    return ResultData.success(res);
+  }
+
+  async clearCacheKey(cacheKey) {
+    const res = await this.redisService.del(cacheKey);
+    return ResultData.success(res);
+  }
+
+  async clearCacheAll() {
+    const res = await this.redisService.reset();
+    return ResultData.success(res);
   }
 }
