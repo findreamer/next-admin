@@ -12,7 +12,9 @@
     "@ant-design/nextjs-registry": "^1.0.0",
     "@unocss/postcss": "^0.61.0",
     "antd": "^5.18.3",
+    "axios": "^1.7.2",
     "framer-motion": "^11.2.12",
+    "js-cookie": "^3.0.5",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
@@ -20,6 +22,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
