@@ -1,8 +1,12 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { ERROR_CODE } from "@/constant";
 import { getToken, tansParams } from ".";
+import { message, Modal } from "antd";
 
 axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
+
+// 是否显示重新登录
+export let isRelogin = { show: false };
 
 const instance = axios.create({
   baseURL: "/api",
@@ -54,36 +58,34 @@ instance.interceptors.response.use(
     if (code === 401) {
       if (!isRelogin.show) {
         isRelogin.show = true;
-        ElMessageBox.confirm(
-          "登录状态已过期，您可以继续留在该页面，或者重新登录",
-          "系统提示",
-          {
-            confirmButtonText: "重新登录",
-            cancelButtonText: "取消",
-            type: "warning",
-          }
-        )
-          .then(() => {
+        Modal.confirm({
+          title: "系统提示",
+          content: "登录状态已过期，您可以继续留在该页面，或者重新登录",
+          okText: "重新登录",
+          cancelText: "取消",
+          type: "warning",
+          onOk: () => {
             isRelogin.show = false;
-            useUserStore()
-              .logOut()
-              .then(() => {
-                location.href = "/index";
-              });
-          })
-          .catch(() => {
+            // useUserStore()
+            //   .logOut()
+            //   .then(() => {
+            //     location.href = "/index";
+            //   });
+          },
+          onCancel: () => {
             isRelogin.show = false;
-          });
+          },
+        });
       }
       return Promise.reject("无效的会话，或者会话已过期，请重新登录。");
     } else if (code === 500) {
-      ElMessage({ message: msg, type: "error" });
+      message.error(msg);
       return Promise.reject(new Error(msg));
     } else if (code === 601) {
-      ElMessage({ message: msg, type: "warning" });
+      message.warning(msg);
       return Promise.reject(new Error(msg));
     } else if (code !== 200) {
-      ElNotification.error({ title: msg });
+      message.error(msg);
       return Promise.reject("error");
     } else {
       return Promise.resolve(res.data);
@@ -99,47 +101,47 @@ instance.interceptors.response.use(
     } else if (message.includes("Request failed with status code")) {
       message = "系统接口" + message.substr(message.length - 3) + "异常";
     }
-    ElMessage({ message: message, type: "error", duration: 5 * 1000 });
+    message({ message: message, type: "error", duration: 5 * 1000 });
     return Promise.reject(error);
   }
 );
 
 // 通用下载方法
-export function download(url, params, filename, config) {
-  downloadLoadingInstance = ElLoading.service({
-    text: "正在下载数据，请稍候",
-    background: "rgba(0, 0, 0, 0.7)",
-  });
-  return service
-    .post(url, params, {
-      transformRequest: [
-        (params) => {
-          return tansParams(params);
-        },
-      ],
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      responseType: "blob",
-      ...config,
-    })
-    .then(async (data) => {
-      const isBlob = blobValidate(data);
-      if (isBlob) {
-        const blob = new Blob([data]);
-        saveAs(blob, filename);
-      } else {
-        const resText = await data.text();
-        const rspObj = JSON.parse(resText);
-        const errMsg =
-          ERROR_CODE[rspObj.code] || rspObj.msg || ERROR_CODE["default"];
-        ElMessage.error(errMsg);
-      }
-      downloadLoadingInstance.close();
-    })
-    .catch((r) => {
-      console.error(r);
-      ElMessage.error("下载文件出现错误，请联系管理员！");
-      downloadLoadingInstance.close();
-    });
-}
+// export function download(url, params, filename, config) {
+//   downloadLoadingInstance = ElLoading.service({
+//     text: "正在下载数据，请稍候",
+//     background: "rgba(0, 0, 0, 0.7)",
+//   });
+//   return service
+//     .post(url, params, {
+//       transformRequest: [
+//         (params) => {
+//           return tansParams(params);
+//         },
+//       ],
+//       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+//       responseType: "blob",
+//       ...config,
+//     })
+//     .then(async (data) => {
+//       const isBlob = blobValidate(data);
+//       if (isBlob) {
+//         const blob = new Blob([data]);
+//         saveAs(blob, filename);
+//       } else {
+//         const resText = await data.text();
+//         const rspObj = JSON.parse(resText);
+//         const errMsg =
+//           ERROR_CODE[rspObj.code] || rspObj.msg || ERROR_CODE["default"];
+//         message.error(errMsg);
+//       }
+//       downloadLoadingInstance.close();
+//     })
+//     .catch((r) => {
+//       console.error(r);
+//       message.error("下载文件出现错误，请联系管理员！");
+//       downloadLoadingInstance.close();
+//     });
+// }
 
-export default service;
+export default instance;
