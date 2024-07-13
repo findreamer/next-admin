@@ -46,4 +46,6 @@ export class MainController {
     };
     return this.mainService.logout(clientInfo);
   }
+
+  // 缺少注册接口
 }
