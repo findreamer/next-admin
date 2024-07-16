@@ -23,3 +23,5 @@ export class ClientInfoDto {
   os: string;
   loginLocation: string;
 }
+
+export class RegisterDto extends LoginDto {}

@@ -21,7 +21,7 @@ import {
   StatusEnum,
 } from '@app/common/enum';
 
-import { ClientInfoDto, LoginDto } from '@app/module/main/dto';
+import { ClientInfoDto, LoginDto, RegisterDto } from '@app/module/main/dto';
 import { SysUserWithPostEntity } from './entities/user-with-post.entity';
 import { SysUserWithRoleEntity } from './entities/user-with-role-entity';
 import * as bcrypt from 'bcrypt';
@@ -617,6 +617,26 @@ export class UserService {
     data['posts'] = posts;
 
     return data;
+  }
+
+  async register(user: RegisterDto) {
+    const loginDate = GetNowDate();
+    const checkUserNameUnique = await this.userRepository.findOne({
+      where: {
+        userName: user.username,
+      },
+    });
+    if (checkUserNameUnique) {
+      return ResultData.fail(
+        500,
+        `注册用户'${user.username}'失败，注册账户已存在`,
+      );
+    }
+
+    user['userName'] = user.username;
+    user['nickName'] = user.username;
+    await this.userRepository.save({ ...user, loginDate });
+    return ResultData.success();
   }
 
   /**

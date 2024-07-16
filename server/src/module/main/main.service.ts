@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../system/user/user.service';
-import { ClientInfoDto, LoginDto } from './dto';
+import { ClientInfoDto, LoginDto, RegisterDto } from './dto';
 import { AxiosService } from '../axios/axios.service';
 import { ResultData, SUCCESS_CODE } from '@app/common/utils';
 import { LoginlogService } from '../monitor/loginlog/loginlog.service';
@@ -52,5 +52,9 @@ export class MainService {
 
     this.loginlogService.create(loginLog);
     return ResultData.success();
+  }
+
+  async register(user: RegisterDto) {
+    return this.userService.register(user);
   }
 }

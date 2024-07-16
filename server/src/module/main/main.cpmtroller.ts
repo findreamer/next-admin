@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, Post, Req } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MainService } from './main.service';
-import { LoginDto, ClientInfoDto } from './dto';
+import { LoginDto, ClientInfoDto, RegisterDto } from './dto';
 import { Request } from 'express';
 import * as Useragent from 'useragent';
 
@@ -47,5 +47,7 @@ export class MainController {
     return this.mainService.logout(clientInfo);
   }
 
-  // 缺少注册接口
+  register(@Body() user: RegisterDto) {
+    this.mainService.register(user);
+  }
 }
