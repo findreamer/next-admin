@@ -9,10 +9,13 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (params: any) => {
     console.log("handleSubmit", params);
+    setLoading(true);
     try {
       const res = await login(params);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
