@@ -13,7 +13,7 @@ export function login(data: {
 }
 
 // 注册方法
-export function register(data) {
+export function register(data: { username: string; password: string }) {
   return request({
     url: "/register",
     headers: {
