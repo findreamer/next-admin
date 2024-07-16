@@ -4,13 +4,14 @@ import { MainService } from './main.service';
 import { LoginDto, ClientInfoDto, RegisterDto } from './dto';
 import { Request } from 'express';
 import * as Useragent from 'useragent';
+import { ConfigService } from '../system/config/config.service';
 
 @ApiTags('根目录')
 @Controller('/')
 export class MainController {
   constructor(
     private readonly mainService: MainService,
-    private readonly configService: Conf,
+    private readonly configService: ConfigService,
   ) {}
 
   @ApiOperation({ summary: '用户登陆' })
