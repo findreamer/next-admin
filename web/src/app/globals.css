@@ -1,5 +1,6 @@
-@import "@unocss/reset/tailwind.css";
-@unocss all;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --foreground-rgb: 0, 0, 0;

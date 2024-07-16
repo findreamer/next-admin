@@ -1,12 +1,15 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Form, Input, Button } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import { useUserStore } from "@/store/useUserStore";
 
 interface FormProps {
+  loading: boolean;
   onSubmit: (values: any) => void;
 }
 
-function LoginForm({ onSubmit }: FormProps) {
+function LoginForm({ onSubmit, loading }: FormProps) {
   const [form] = useForm();
 
   const handleSubmit = (values: any) => {
@@ -22,6 +25,7 @@ function LoginForm({ onSubmit }: FormProps) {
         wrapperCol={{ span: 19 }}
         form={form}
         onFinish={handleSubmit}
+        disabled={loading}
       >
         <Form.Item
           name="username"
