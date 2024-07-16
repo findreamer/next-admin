@@ -18,6 +18,7 @@ import { MenuModule } from './module/system/menu/menu.module';
 import { ToolModule } from './module/system/tool/tool.module';
 import { LoginlogModule } from './module/monitor/loginlog/loginlog.module';
 import { CacheModule } from './module/cache/cache.module';
+import { SysConfigModule } from './module/system/config/config.module';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { CacheModule } from './module/cache/cache.module';
           entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
           keepConnectionAlive: true,
-          // synchronize: process.env.NODE_ENV === 'production' ? false : true,
+          synchronize: process.env.NODE_ENV === 'production' ? false : true,
           ...config.get('db.mysql'),
         } as TypeOrmModuleOptions;
       },
@@ -71,6 +72,7 @@ import { CacheModule } from './module/cache/cache.module';
     AxiosModule,
     LoginlogModule,
     CacheModule,
+    SysConfigModule,
   ],
   controllers: [],
   providers: [

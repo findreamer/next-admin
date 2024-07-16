@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { MainService } from './main.service';
-import { MainController } from './main.cpmtroller';
+import { MainController } from './main.controller';
 
 @Module({
   controllers: [MainController],

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MainService } from './main.service';
 import { LoginDto, ClientInfoDto, RegisterDto } from './dto';
@@ -8,7 +8,10 @@ import * as Useragent from 'useragent';
 @ApiTags('根目录')
 @Controller('/')
 export class MainController {
-  constructor(private readonly mainService: MainService) {}
+  constructor(
+    private readonly mainService: MainService,
+    private readonly configService: Conf,
+  ) {}
 
   @ApiOperation({ summary: '用户登陆' })
   @ApiBody({
@@ -47,7 +50,22 @@ export class MainController {
     return this.mainService.logout(clientInfo);
   }
 
+  @ApiOperation({ summary: '用户注册' })
+  @ApiBody({
+    type: RegisterDto,
+    required: true,
+  })
+  @Post('/register')
+  @HttpCode(200)
   register(@Body() user: RegisterDto) {
     this.mainService.register(user);
+  }
+
+  @ApiOperation({ summary: '获取验证码' })
+  @Get('/captchaImage')
+  async captchaImage() {
+    const enable = await this.configService.getConfigValue(
+      'sys.account.captchaEnabled',
+    );
   }
 }
