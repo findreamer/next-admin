@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, ListConfigDto } from './dto';
@@ -29,5 +29,14 @@ export class ConfigController {
   @RequirePermission('system:config:query')
   findAll(query: ListConfigDto) {
     return this.configService.findAll(query);
+  }
+
+  @ApiOperation({
+    summary: '参数设置-详情',
+  })
+  @RequirePermission('system:config:query')
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.configService.findOne(+id);
   }
 }

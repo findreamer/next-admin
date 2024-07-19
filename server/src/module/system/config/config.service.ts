@@ -55,4 +55,13 @@ export class ConfigService {
       total,
     });
   }
+
+  async findOne(id: number) {
+    const configData = await this.sysConfigEntityRep.findOne({
+      where: {
+        configId: id,
+      },
+    });
+    return ResultData.success(configData);
+  }
 }
