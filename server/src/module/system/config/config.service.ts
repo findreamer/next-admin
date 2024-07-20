@@ -157,4 +157,20 @@ export class ConfigService {
 
     ExportTable(options, res);
   }
+
+  async refreshCache() {
+    const list = await this.sysConfigEntityRep.find({
+      where: {
+        delFlag: '0',
+      },
+    });
+    list.forEach((item) => {
+      this.redisService.set(
+        `${CacheEnum.SYS_CONFIG_KEY}${item.configKey}`,
+        item.configValue,
+      );
+    });
+
+    return ResultData.success();
+  }
 }

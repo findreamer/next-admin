@@ -82,4 +82,13 @@ export class ConfigController {
   async export(@Res() res, @Body() listConfigDto: ListConfigDto) {
     return this.configService.export(res, listConfigDto);
   }
+
+  @ApiOperation({
+    summary: '参数设置-刷新缓存',
+  })
+  @RequirePermission('system:config:remove')
+  @Delete('/refreshCache')
+  refreshCache() {
+    return this.configService.refreshCache();
+  }
 }
