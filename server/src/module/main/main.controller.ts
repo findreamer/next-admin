@@ -5,6 +5,9 @@ import { LoginDto, ClientInfoDto, RegisterDto } from './dto';
 import { Request } from 'express';
 import * as Useragent from 'useragent';
 import { ConfigService } from '../system/config/config.service';
+import { GenerateUUID, ResultData, createMath } from '@app/common/utils';
+import { RedisService } from '../redis/redis.service';
+import { CacheEnum } from '@app/common/enum';
 
 @ApiTags('根目录')
 @Controller('/')
@@ -12,6 +15,7 @@ export class MainController {
   constructor(
     private readonly mainService: MainService,
     private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
   ) {}
 
   @ApiOperation({ summary: '用户登陆' })
@@ -68,5 +72,29 @@ export class MainController {
     const enable = await this.configService.getConfigValue(
       'sys.account.captchaEnabled',
     );
+
+    const captchaEnabled = enable === 'true';
+
+    const data = {
+      captchaEnabled,
+      img: '',
+      uuid: '',
+    };
+
+    try {
+      if (captchaEnabled) {
+        const captchaInfo = createMath();
+        data.img = captchaInfo.data;
+        data.uuid = GenerateUUID();
+        await this.redisService.set(
+          CacheEnum.CAPTCHA_CODE_KEY + data.uuid,
+          captchaInfo.text.toLowerCase(),
+          1000 * 60 * 5,
+        );
+      }
+      return ResultData.success(data, '操作成功');
+    } catch (error) {
+      return ResultData.fail(500, '生成验证码错误，请重试');
+    }
   }
 }

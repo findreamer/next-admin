@@ -6,7 +6,6 @@ import { ResultData } from '@app/common/utils';
 import { CreateConfigDto, ListConfigDto, UpdateConfigDto } from './dto';
 import { RedisService } from '@app/module/redis/redis.service';
 import { CacheEnum } from '@app/common/enum';
-import { ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ExportTable } from '@app/common/utils/export';
 
