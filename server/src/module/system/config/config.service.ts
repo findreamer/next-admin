@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { SysConfigEntity } from './entities/config.entity';
 import { ResultData } from '@app/common/utils';
 import { CreateConfigDto, ListConfigDto } from './dto';
+import { RedisService } from '@app/module/redis/redis.service';
+import { CacheEnum } from '@app/common/enum';
 
 @Injectable()
 export class ConfigService {
   constructor(
     @InjectRepository(SysConfigEntity)
     private readonly sysConfigEntityRep: Repository<SysConfigEntity>,
+    private readonly redisService: RedisService,
   ) {}
 
   async create(createConfigDto: CreateConfigDto) {
@@ -63,5 +66,31 @@ export class ConfigService {
       },
     });
     return ResultData.success(configData);
+  }
+
+  async findOneByConfigKey(configKey: string) {
+    const configData = await this.getConfigValue(configKey);
+    return ResultData.success(configData);
+  }
+
+  async getConfigValue(configKey: string): Promise<string> {
+    const cacheData = await this.redisService.get(
+      `${CacheEnum.SYS_CONFIG_KEY}${configKey}`,
+    );
+    if (cacheData) {
+      return cacheData;
+    }
+
+    const configData = await this.sysConfigEntityRep.findOne({
+      where: {
+        configKey,
+      },
+    });
+
+    await this.redisService.set(
+      `${CacheEnum.SYS_CONFIG_KEY}${configKey}`,
+      configData.configValue,
+    );
+    return configData.configValue;
   }
 }

@@ -32,11 +32,19 @@ export class ConfigController {
   }
 
   @ApiOperation({
-    summary: '参数设置-详情',
+    summary: '参数设置-详情(id)',
   })
   @RequirePermission('system:config:query')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.configService.findOne(+id);
+  }
+
+  @ApiOperation({
+    summary: '参数设置-详情(configKey)【走缓存】',
+  })
+  @Get('/configKey/:id')
+  findOneByConfigKey(@Param('id') configKey: string) {
+    return this.configService.findOneByConfigKey(configKey);
   }
 }
