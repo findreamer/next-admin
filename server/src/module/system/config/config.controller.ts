@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, ListConfigDto, UpdateConfigDto } from './dto';
@@ -55,5 +63,15 @@ export class ConfigController {
   @Put()
   update(@Body() updateConfigDto: UpdateConfigDto) {
     return this.configService.update(updateConfigDto);
+  }
+
+  @ApiOperation({
+    summary: '参数设置-删除',
+  })
+  @RequirePermission('system:config:remove')
+  @Delete(':id')
+  remove(@Param('id') ids: string) {
+    const configIds = ids.split(',').map((id) => +id);
+    return this.configService.remove(configIds);
   }
 }

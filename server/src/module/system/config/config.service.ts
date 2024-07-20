@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { SysConfigEntity } from './entities/config.entity';
 import { ResultData } from '@app/common/utils';
 import { CreateConfigDto, ListConfigDto, UpdateConfigDto } from './dto';
@@ -102,6 +102,31 @@ export class ConfigService {
       updateConfigDto,
     );
 
+    return ResultData.success(res);
+  }
+
+  async remove(configIds: number[]) {
+    const list = await this.sysConfigEntityRep.find({
+      where: {
+        configId: In(configIds),
+        delFlag: '0',
+      },
+      select: ['configKey', 'configType'],
+    });
+
+    const item = list.find((item) => item.configType === 'Y');
+    if (item) {
+      return ResultData.fail(500, `内置参数【${item.configKey}】不能删除`);
+    }
+
+    const res = await this.sysConfigEntityRep.update(
+      {
+        configId: In(configIds),
+      },
+      {
+        delFlag: '1',
+      },
+    );
     return ResultData.success(res);
   }
 }
