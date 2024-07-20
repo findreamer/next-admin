@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
@@ -73,5 +74,12 @@ export class ConfigController {
   remove(@Param('id') ids: string) {
     const configIds = ids.split(',').map((id) => +id);
     return this.configService.remove(configIds);
+  }
+
+  @ApiOperation({ summary: '导出参数管理为xlsx文件' })
+  @RequirePermission('system:config:export')
+  @Post('/export')
+  async export(@Res() res, @Body() listConfigDto: ListConfigDto) {
+    return this.configService.export(res, listConfigDto);
   }
 }

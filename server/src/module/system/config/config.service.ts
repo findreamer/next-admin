@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { SysConfigEntity } from './entities/config.entity';
@@ -6,6 +6,9 @@ import { ResultData } from '@app/common/utils';
 import { CreateConfigDto, ListConfigDto, UpdateConfigDto } from './dto';
 import { RedisService } from '@app/module/redis/redis.service';
 import { CacheEnum } from '@app/common/enum';
+import { ApiOperation } from '@nestjs/swagger';
+import { Response } from 'express';
+import { ExportTable } from '@app/common/utils/export';
 
 @Injectable()
 export class ConfigService {
@@ -128,5 +131,30 @@ export class ConfigService {
       },
     );
     return ResultData.success(res);
+  }
+
+  async export(res: Response, body: ListConfigDto) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAll(body);
+    const options = {
+      sheetName: '参数管理',
+      data: list.data.list,
+      header: [
+        { title: '参数主键', dataIndex: 'configId' },
+        { title: '参数名称', dataIndex: 'configName' },
+        { title: '参数键名', dataIndex: 'configKey' },
+        { title: '参数键值', dataIndex: 'configValue' },
+        { title: '系统内置', dataIndex: 'configType' },
+      ],
+      dictMap: {
+        configType: {
+          Y: '是',
+          N: '否',
+        },
+      },
+    };
+
+    ExportTable(options, res);
   }
 }
