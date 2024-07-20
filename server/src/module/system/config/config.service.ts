@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SysConfigEntity } from './entities/config.entity';
 import { ResultData } from '@app/common/utils';
-import { CreateConfigDto, ListConfigDto } from './dto';
+import { CreateConfigDto, ListConfigDto, UpdateConfigDto } from './dto';
 import { RedisService } from '@app/module/redis/redis.service';
 import { CacheEnum } from '@app/common/enum';
 
@@ -92,5 +92,16 @@ export class ConfigService {
       configData.configValue,
     );
     return configData.configValue;
+  }
+
+  async update(updateConfigDto: UpdateConfigDto) {
+    const res = await this.sysConfigEntityRep.update(
+      {
+        configId: updateConfigDto.configId,
+      },
+      updateConfigDto,
+    );
+
+    return ResultData.success(res);
   }
 }

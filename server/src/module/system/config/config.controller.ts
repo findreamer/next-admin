@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
-import { CreateConfigDto, ListConfigDto } from './dto';
+import { CreateConfigDto, ListConfigDto, UpdateConfigDto } from './dto';
 import { RequirePermission } from '@app/common/decorators/require-permission.decorator';
 
 @ApiTags('参数配置')
@@ -46,5 +46,14 @@ export class ConfigController {
   @Get('/configKey/:id')
   findOneByConfigKey(@Param('id') configKey: string) {
     return this.configService.findOneByConfigKey(configKey);
+  }
+
+  @ApiOperation({
+    summary: '参数设置-更新',
+  })
+  @RequirePermission('system:config:edit')
+  @Put()
+  update(@Body() updateConfigDto: UpdateConfigDto) {
+    return this.configService.update(updateConfigDto);
   }
 }
