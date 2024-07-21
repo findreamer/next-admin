@@ -19,6 +19,8 @@ import { ToolModule } from './module/system/tool/tool.module';
 import { LoginlogModule } from './module/monitor/loginlog/loginlog.module';
 import { CacheModule } from './module/cache/cache.module';
 import { SysConfigModule } from './module/system/config/config.module';
+import { RolesGuard } from './common/guards/roles.guards';
+import { PermissionGuard } from './common/guards/permission.guards';
 
 @Module({
   imports: [
@@ -79,6 +81,15 @@ import { SysConfigModule } from './module/system/config/config.module';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
     },
   ],
 })
