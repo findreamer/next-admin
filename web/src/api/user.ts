@@ -51,3 +51,13 @@ export function getCodeImg() {
     timeout: 20000,
   });
 }
+
+export function getCaptcha() {
+  return request({
+    url: "/captchaImage",
+    headers: {
+      isToken: false,
+    },
+    method: "get",
+  });
+}

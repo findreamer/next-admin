@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form, Input, Button } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useUserStore } from "@/store/useUserStore";
+import { getCaptcha } from "@/api/index";
 
 interface FormProps {
   loading: boolean;
@@ -15,6 +16,14 @@ function LoginForm({ onSubmit, loading }: FormProps) {
   const handleSubmit = (values: any) => {
     onSubmit(values);
   };
+  const fetchCache = useCallback(async () => {
+    const res = await getCaptcha();
+    console.log(res);
+  }, []);
+
+  useEffect(() => {
+    fetchCache();
+  }, [fetchCache]);
 
   return (
     <div className="w-100 bg-white p-6 rounded-md shadow-md">
@@ -41,6 +50,7 @@ function LoginForm({ onSubmit, loading }: FormProps) {
         >
           <Input.Password />
         </Form.Item>
+        <Form.Item name={"code"} label="验证码"></Form.Item>
 
         <Form.Item wrapperCol={{ offset: 5, span: 19 }}>
           <div className="flex justify-end">
