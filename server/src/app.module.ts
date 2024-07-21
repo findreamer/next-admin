@@ -40,7 +40,7 @@ import { SysConfigModule } from './module/system/config/config.module';
           entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
           keepConnectionAlive: true,
-          synchronize: process.env.NODE_ENV === 'production' ? false : true,
+          synchronize: true,
           ...config.get('db.mysql'),
         } as TypeOrmModuleOptions;
       },
