@@ -31,6 +31,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     // 判断是否在白名单内
     const isInWhiteList = this.checkWhiteList(ctx);
+    console.log('isInWhiteList => ', isInWhiteList);
     if (isInWhiteList) return true;
 
     // 判断接口是否不需要校验 token

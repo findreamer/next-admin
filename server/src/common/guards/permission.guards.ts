@@ -12,6 +12,7 @@ export class PermissionGuard implements CanActivate {
       ctx.getHandler(),
     ]);
 
+    console.log('perm ==> ', perm);
     // 不需要鉴权
     if (perm == undefined) return true;
 
