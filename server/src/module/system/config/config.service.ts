@@ -1,4 +1,4 @@
-import { Injectable, Post } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { SysConfigEntity } from './entities/config.entity';
@@ -93,7 +93,7 @@ export class ConfigService {
       `${CacheEnum.SYS_CONFIG_KEY}${configKey}`,
       configData.configValue,
     );
-    return configData.configValue;
+    return configData ? configData.configValue : '';
   }
 
   async update(updateConfigDto: UpdateConfigDto) {
