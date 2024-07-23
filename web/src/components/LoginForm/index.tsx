@@ -1,9 +1,11 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Space } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useUserStore } from "@/store/useUserStore";
 import { getCaptcha } from "@/api/index";
+import { LoadingOutlined } from "@ant-design/icons";
+import styles from "./index.module.scss";
 
 interface FormProps {
   loading: boolean;
@@ -12,18 +14,20 @@ interface FormProps {
 
 function LoginForm({ onSubmit, loading }: FormProps) {
   const [form] = useForm();
+  const [captcha, setCaptcha] = useState<any>({});
 
   const handleSubmit = (values: any) => {
     onSubmit(values);
   };
   const fetchCache = useCallback(async () => {
     const res = await getCaptcha();
-    console.log(res);
+    setCaptcha(res.data);
   }, []);
 
   useEffect(() => {
     fetchCache();
-  }, [fetchCache]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="w-100 bg-white p-6 rounded-md shadow-md">
@@ -50,7 +54,20 @@ function LoginForm({ onSubmit, loading }: FormProps) {
         >
           <Input.Password />
         </Form.Item>
-        <Form.Item name={"code"} label="验证码"></Form.Item>
+        <Form.Item name={"code"} label="验证码" rules={[{ required: true }]}>
+          <div className="flex items-center">
+            <Input />
+            {captcha.img ? (
+              <div
+                className={styles["captcha-img"]}
+                onClick={fetchCache}
+                dangerouslySetInnerHTML={{ __html: captcha.img }}
+              ></div>
+            ) : (
+              <LoadingOutlined />
+            )}
+          </div>
+        </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 5, span: 19 }}>
           <div className="flex justify-end">
