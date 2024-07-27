@@ -64,7 +64,7 @@ export class MainController {
   @Post('/register')
   @HttpCode(200)
   register(@Body() user: RegisterDto) {
-    this.mainService.register(user);
+    return this.mainService.register(user);
   }
 
   @ApiOperation({ summary: '获取验证码' })

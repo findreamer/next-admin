@@ -30,8 +30,7 @@ function LoginForm({ onSubmit, loading }: FormProps) {
   }, []);
 
   return (
-    <div className="w-100 bg-white p-6 rounded-md shadow-md">
-      <h2 className="text-center mb-4">next-admin后台管理系统</h2>
+    <div className="">
       <Form
         layout="horizontal"
         labelCol={{ span: 5 }}
