@@ -1,0 +1,12 @@
+{
+  "name": "next-admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd ./server && npm run start:dev && cd ../web && npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
