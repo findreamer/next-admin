@@ -1,4 +1,4 @@
-import axios, { type InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { ERROR_CODE } from "@/constant";
 import { getToken, tansParams } from ".";
 import { message, Modal } from "antd";

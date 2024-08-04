@@ -499,7 +499,9 @@ export class UserService {
       select: ['password', 'userId'],
     });
 
-    console.log(data.password, user.password);
+    if (!data) {
+      return ResultData.fail(500, `用户名不存在！`);
+    }
     if (!(data && bcrypt.compareSync(user.password, data.password))) {
       return ResultData.fail(500, '帐号或密码错误');
     }

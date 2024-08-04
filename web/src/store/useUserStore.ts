@@ -12,11 +12,12 @@ export type State = {
 };
 
 export type Actions = {
-  login: (params: Parameters<typeof login>[0]) => void;
+  login: (params: Parameters<typeof login>[0]) => Promise<boolean>;
   getInfo: () => {};
   logout: () => void;
-  register: (params: Parameters<typeof register>[0]) => void;
+  register: (params: Parameters<typeof register>[0]) => Promise<boolean>;
 };
+
 export const useUserStore = create<State & Actions>((set) => ({
   token: getToken() || "",
   name: "",
@@ -25,22 +26,25 @@ export const useUserStore = create<State & Actions>((set) => ({
   permissions: [],
   async login(data) {
     try {
-      const res = await login(data);
-      if (res.data.status === 200) {
-        set({ token: res.data.data.token });
-        setToken(res.data.data.token);
+      const res = (await login(data)) as any;
+      console.log(res);
+      if (res.code === 200) {
+        set({ token: res.data.token });
+        setToken(res.data.token);
+        return true;
       }
     } catch (error) {}
+    return false;
   },
 
   async register(params) {
     try {
-      const res = await register(params);
-      if (res.data.status === 200) {
-        set({ token: res.data.data.token });
-        setToken(res.data.data.token);
+      const res = (await register(params)) as any;
+      if (res.code === 200) {
+        return true;
       }
     } catch (error) {}
+    return false;
   },
   async getInfo() {
     try {

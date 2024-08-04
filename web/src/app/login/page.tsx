@@ -3,16 +3,24 @@ import LoginForm from "@/components/LoginForm";
 import "./index.css";
 import { useUserStore } from "@/store/useUserStore";
 import { useState } from "react";
-import { Tabs } from "antd";
+import { Tabs, message } from "antd";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
   const { login, register } = useUserStore();
   const [loading, setLoading] = useState(false);
+  const [tabKey, setTabKey] = useState("login");
+
   const handleSubmit = async (params: any) => {
     console.log("handleSubmit", params);
     setLoading(true);
     try {
       const res = await login(params);
+      if (res) {
+        message.success("登录成功");
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -21,10 +29,14 @@ const LoginPage = () => {
   };
 
   const handleRegister = async (params: any) => {
-    console.log("handleSubmit", params);
     setLoading(true);
     try {
       const res = await register(params);
+      console.log("res ==> ", res);
+      if (res) {
+        message.success("注册成功");
+        setTabKey("login");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -38,6 +50,8 @@ const LoginPage = () => {
         <h2 className="text-center mb-2">next-admin后台管理系统</h2>
         <Tabs
           defaultActiveKey="login"
+          activeKey={tabKey}
+          onChange={(key) => setTabKey(key)}
           items={[
             {
               label: "登录",
