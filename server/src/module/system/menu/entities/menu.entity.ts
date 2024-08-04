@@ -33,7 +33,7 @@ export class SysMenuEntity extends BaseEntity {
     type: Number,
     description: '显示顺序',
   })
-  @Column({ type: 'int', name: 'order_name', default: 0, comment: '显示顺序' })
+  @Column({ type: 'int', name: 'order_num', default: 0, comment: '显示顺序' })
   public orderNum: number;
 
   @Column({
