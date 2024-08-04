@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cd ./server && npm run start:dev && cd ../web && npm run dev"
+    "dev:web": " cd ./web && npm run dev",
+    "dev:server": "cd ./server && npm run start:dev"
   },
   "keywords": [],
   "author": "",
