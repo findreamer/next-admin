@@ -26,7 +26,6 @@ export class MainController {
   @Post('/login')
   @HttpCode(200)
   login(@Body() user: LoginDto, @Req() req: Request) {
-    console.log(11);
     const agent = Useragent.parse(req.headers['user-agent']);
     const os = agent.os.toJSON().family;
     const browser = agent.toAgent();

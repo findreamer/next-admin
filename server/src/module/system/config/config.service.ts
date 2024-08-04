@@ -89,10 +89,12 @@ export class ConfigService {
       },
     });
 
-    await this.redisService.set(
-      `${CacheEnum.SYS_CONFIG_KEY}${configKey}`,
-      configData.configValue,
-    );
+    if (configData) {
+      await this.redisService.set(
+        `${CacheEnum.SYS_CONFIG_KEY}${configKey}`,
+        configData.configValue,
+      );
+    }
     return configData ? configData.configValue : '';
   }
 

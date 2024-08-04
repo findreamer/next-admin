@@ -75,3 +75,4 @@ perm:
 # 初始密码， 重置密码
 user:
   initialPassword: '123456'
+  saltRounds: 10
