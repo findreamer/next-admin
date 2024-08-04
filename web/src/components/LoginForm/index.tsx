@@ -17,7 +17,10 @@ function LoginForm({ onSubmit, loading }: FormProps) {
   const [captcha, setCaptcha] = useState<any>({});
 
   const handleSubmit = (values: any) => {
-    onSubmit(values);
+    onSubmit({
+      ...values,
+      uuid: captcha.uuid,
+    });
   };
   const fetchCache = useCallback(async () => {
     const res = await getCaptcha();

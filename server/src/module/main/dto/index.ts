@@ -14,6 +14,10 @@ export class LoginDto {
   @IsString()
   @Length(5, 20, { message: '密码长度必须在5-20之间' })
   password: string;
+
+  @IsOptional()
+  @IsString()
+  uuid?: string;
 }
 
 export class ClientInfoDto {

@@ -36,6 +36,7 @@ import { DeptService } from '../dept/dept.service';
 import { RedisService } from '@app/module/redis/redis.service';
 import { SysPostEntity } from '../post/entities/post.entity';
 import { SysRoleEntity } from '../role/entities/role.entity';
+import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class UserService {
@@ -54,6 +55,7 @@ export class UserService {
     private readonly roleService: RoleService,
     private readonly deptService: DeptService,
     private readonly redisService: RedisService,
+    private readonly configServiece: ConfigService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -473,6 +475,23 @@ export class UserService {
   }
 
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
+    const enable = await this.configServiece.getConfigValue(
+      'sys.account.captchaEnabled',
+    );
+    const captchaEnabled = enable === 'true';
+
+    if (captchaEnabled) {
+      const code = await this.redisService.get(
+        CacheEnum.CAPTCHA_CODE_KEY + user.uuid,
+      );
+      if (!code) {
+        return ResultData.fail(500, `验证码已过期`);
+      }
+      if (code !== user.code) {
+        return ResultData.fail(500, `验证码错误`);
+      }
+    }
+
     const data = await this.userRepository.findOne({
       where: {
         userName: user.username,
@@ -480,6 +499,7 @@ export class UserService {
       select: ['password', 'userId'],
     });
 
+    console.log(data.password, user.password);
     if (!(data && bcrypt.compareSync(user.password, data.password))) {
       return ResultData.fail(500, '帐号或密码错误');
     }
@@ -635,8 +655,13 @@ export class UserService {
 
     user['userName'] = user.username;
     user['nickName'] = user.username;
+    const saltRounds =
+      await this.configServiece.getConfigValue('user.saltRounds');
+    const salt = bcrypt.genSaltSync(+saltRounds);
+    const hash = bcrypt.hashSync(user.password, salt);
+    user['password'] = hash;
     await this.userRepository.save({ ...user, loginDate });
-    return ResultData.success();
+    return ResultData.success('注册成功');
   }
 
   /**
